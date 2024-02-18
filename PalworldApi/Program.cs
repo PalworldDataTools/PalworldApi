@@ -21,16 +21,16 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseStatusCodePages();
-
-    app.UseSwaggerUi();
 }
 
 app.UseExceptionHandler();
+app.UseSwaggerUi();
 
 app.UseOpenApi();
 
+app.UseStaticFiles();
 app.UseV1();
 
-app.UseStaticFiles();
+app.MapGet("/", () => Results.LocalRedirect("~/index.html", true, true));
 
 app.Run();
