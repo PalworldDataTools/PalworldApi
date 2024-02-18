@@ -2,7 +2,7 @@
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
-namespace PalworldApi.OpenApi;
+namespace PalworldApi.Rest.OpenApi;
 
 public class VersionProcessor : IOperationProcessor
 {

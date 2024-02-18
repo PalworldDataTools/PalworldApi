@@ -1,4 +1,4 @@
-﻿namespace PalworldApi.OpenApi;
+﻿namespace PalworldApi.Rest.OpenApi;
 
 public class VersionMetadata
 {

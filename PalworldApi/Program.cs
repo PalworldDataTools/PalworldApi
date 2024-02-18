@@ -1,6 +1,6 @@
+using PalworldApi.Rest.v1;
 using PalworldApi.Serialization;
 using PalworldApi.Services;
-using PalworldApi.v1;
 
 WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(args);
 
@@ -30,5 +30,7 @@ app.UseExceptionHandler();
 app.UseOpenApi();
 
 app.UseV1();
+
+app.UseStaticFiles();
 
 app.Run();

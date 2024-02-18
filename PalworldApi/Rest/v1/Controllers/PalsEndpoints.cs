@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using PalworldApi.OpenApi;
+using PalworldApi.Rest.OpenApi;
 using PalworldApi.Services;
 using PalworldDataExtractor.Models;
 using PalworldDataExtractor.Models.Pals;
 
-namespace PalworldApi.v1.Controllers;
+namespace PalworldApi.Rest.v1.Controllers;
 
 public class PalsEndpoints
 {

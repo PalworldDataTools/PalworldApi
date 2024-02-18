@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PalworldApi.v1.Models.Pals;
+namespace PalworldApi.Rest.v1.Models.Pals;
 
 public class Pal
 {

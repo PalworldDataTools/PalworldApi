@@ -1,7 +1,7 @@
-﻿using PalworldApi.OpenApi;
-using PalworldApi.v1.Controllers;
+﻿using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.v1.Controllers;
 
-namespace PalworldApi.v1;
+namespace PalworldApi.Rest.v1;
 
 public static class ApiV1Extensions
 {
