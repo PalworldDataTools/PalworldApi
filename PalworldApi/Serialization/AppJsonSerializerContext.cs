@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using PalworldApi.Configuration;
+using PalworldDataExtractor.Models;
 using PalworldDataExtractor.Models.Pals;
 
 namespace PalworldApi.Serialization;
@@ -12,7 +12,7 @@ namespace PalworldApi.Serialization;
 #endif
 [JsonSerializable(typeof(long))]
 [JsonSerializable(typeof(IEnumerable<string>))]
-[JsonSerializable(typeof(DataExtractionConfiguration))]
+[JsonSerializable(typeof(IReadOnlyCollection<string>))]
 [JsonSerializable(typeof(Pal))]
 partial class AppJsonSerializerContext : JsonSerializerContext
 {

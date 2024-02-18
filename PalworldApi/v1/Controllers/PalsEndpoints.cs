@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PalworldApi.OpenApi;
 using PalworldApi.Services;
+using PalworldDataExtractor.Models;
 using PalworldDataExtractor.Models.Pals;
 
 namespace PalworldApi.v1.Controllers;
@@ -17,9 +18,15 @@ public class PalsEndpoints
         _rawDataService = rawDataService;
     }
 
-    public Results<Ok<Pal>, NotFound> GetPal(string name)
+    public async Task<Results<Ok<Pal>, NotFound>> GetPal(string name)
     {
-        Pal? pal = _rawDataService.Data.Tribes.FirstOrDefault(t => t.Name == name)?.Pals.FirstOrDefault();
+        ExtractedData? data = await _rawDataService.GetData();
+        if (data == null)
+        {
+            return DataNotFound();
+        }
+
+        Pal? pal = data.Tribes.FirstOrDefault(t => t.Name == name)?.Pals.FirstOrDefault();
         if (pal == null)
         {
             return PalNotFound();
@@ -28,11 +35,21 @@ public class PalsEndpoints
         return TypedResults.Ok(pal);
     }
 
-    public Ok<IEnumerable<string>> GetPalNames() => TypedResults.Ok(_rawDataService.Data.Tribes.Select(t => t.Name));
+    public async Task<Results<Ok<IEnumerable<string>>, NotFound>> GetPalNames()
+    {
+        ExtractedData? data = await _rawDataService.GetData();
+        if (data == null)
+        {
+            return DataNotFound();
+        }
+
+        return TypedResults.Ok(data.Tribes.Select(t => t.Name));
+    }
 
     static NotFound PalNotFound() => TypedResults.NotFound();
+    static NotFound DataNotFound() => TypedResults.NotFound();
 
-    public static void Map(WebApplication app, string? routePrefix = null)
+    public static void Map(WebApplication app)
     {
         app.MapGet("v1/pals/names", ([FromServices] PalsEndpoints endpoints) => endpoints.GetPalNames())
             .WithVersion("v1")

@@ -7,8 +7,9 @@ public static class ApiV1Extensions
 {
     public static void AddV1(this IServiceCollection services)
     {
-        services.AddSingleton<PalsEndpoints>();
         services.AddSingleton<PalworldSteamApplicationEndpoints>();
+        services.AddSingleton<PalworldDataEndpoints>();
+        services.AddSingleton<PalsEndpoints>();
 
         services.AddOpenApiDocument(
             opt =>
@@ -23,15 +24,10 @@ public static class ApiV1Extensions
         );
     }
 
-    public static void UseV1(this WebApplication app, string? prefix = null)
+    public static void UseV1(this WebApplication app)
     {
-        prefix = prefix == null
-            ? "v1/"
-            : prefix.EndsWith('/')
-                ? prefix
-                : prefix + '/';
-
-        PalworldSteamApplicationEndpoints.Map(app, prefix);
-        PalsEndpoints.Map(app, prefix);
+        PalworldSteamApplicationEndpoints.Map(app);
+        PalworldDataEndpoints.Map(app);
+        PalsEndpoints.Map(app);
     }
 }

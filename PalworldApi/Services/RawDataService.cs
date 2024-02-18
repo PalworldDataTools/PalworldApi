@@ -1,40 +1,61 @@
-﻿using System.Text.Json;
-using PalworldApi.Configuration;
-using PalworldApi.Serialization;
-using PalworldDataExtractor;
+﻿using System.Reflection;
 using PalworldDataExtractor.Models;
 
 namespace PalworldApi.Services;
 
 public class RawDataService
 {
-    readonly DataExtractionConfiguration _configuration;
-    readonly ILogger<RawDataService> _logger;
-    public ExtractedData Data { get; private set; } = null!;
-
-    public RawDataService(DataExtractionConfiguration configuration, ILogger<RawDataService> logger)
+    static readonly Dictionary<string, string> Versions = new()
     {
-        _configuration = configuration;
+        { "steam-13390747", "steam-13390747.json" }
+    };
+    const string DefaultVersion = "steam-13390747";
+
+    readonly ILogger<RawDataService> _logger;
+    readonly Dictionary<string, ExtractedData> _cachedData = new();
+
+    public RawDataService(ILogger<RawDataService> logger)
+    {
         _logger = logger;
     }
 
-    public async Task Initialize()
+    public IReadOnlyCollection<string> GetVersions() => Versions.Keys;
+
+    public async Task<ExtractedData?> GetData() => await GetData(DefaultVersion);
+
+    public async Task<ExtractedData?> GetData(string version)
     {
-        DataExtractor extractor = new(
-            _configuration.PalworldPakDirectory,
-            config =>
-            {
-                config.MappingsFilePath = _configuration.ExtractorConfiguration.MappingsFilePath;
-                config.UnrealEngineVersion = _configuration.ExtractorConfiguration.UnrealEngineVersion;
-                config.PakFileName = _configuration.ExtractorConfiguration.PakFileName;
-            }
-        );
+        if (_cachedData.TryGetValue(version, out ExtractedData? cachedData))
+        {
+            return cachedData;
+        }
 
-        _logger.LogDebug("Configuration: {config}", JsonSerializer.Serialize(_configuration, typeof(DataExtractionConfiguration), AppJsonSerializerContext.Default));
-        _logger.LogInformation("Extracting data from .pak file...");
+        return await LoadAndCache(version);
+    }
 
-        Data = await extractor.Extract();
+    async Task<ExtractedData?> LoadAndCache(string version)
+    {
+        if (!Versions.TryGetValue(version, out string? resourcePath))
+        {
+            return null;
+        }
 
-        _logger.LogInformation("Done extracting data.");
+        Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream($"PalworldApi.Resources.PalworldData.{resourcePath}");
+        if (resource == null)
+        {
+            return null;
+        }
+
+        ExtractedData? data = await ExtractedData.Deserialize(resource);
+        if (data == null)
+        {
+            return null;
+        }
+
+        _logger.LogInformation("Palworld data has been loaded: {version}", version);
+
+        _cachedData[version] = data;
+
+        return data;
     }
 }

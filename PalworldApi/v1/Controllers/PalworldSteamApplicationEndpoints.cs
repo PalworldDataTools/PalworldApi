@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PalworldApi.OpenApi;
 using PalworldApi.Services;
@@ -18,20 +17,55 @@ public class PalworldSteamApplicationEndpoints
         _rawDataService = rawDataService;
     }
 
-    public Results<Ok<string>, NotFound> GetSteamApplicationId() => TryGetManifest(out SteamManifest? manifest) ? TypedResults.Ok(manifest.AppId) : ManifestNotFound();
-    public Results<Ok<string>, NotFound> GetSteamApplicationName() => TryGetManifest(out SteamManifest? manifest) ? TypedResults.Ok(manifest.AppName) : ManifestNotFound();
-    public Results<Ok<string>, NotFound> GetSteamBuildId() => TryGetManifest(out SteamManifest? manifest) ? TypedResults.Ok(manifest.BuildId) : ManifestNotFound();
-    public Results<Ok<long>, NotFound> GetSteamApplicationSize() => TryGetManifest(out SteamManifest? manifest) ? TypedResults.Ok(manifest.AppSize) : ManifestNotFound();
-
-    bool TryGetManifest([NotNullWhen(true)] out SteamManifest? steamManifest)
+    public async Task<Results<Ok<string>, NotFound>> GetSteamApplicationId()
     {
-        steamManifest = _rawDataService.Data.SteamManifest;
-        return steamManifest != null;
+        SteamManifest? manifest = await TryGetManifest();
+        if (manifest == null)
+        {
+            return ManifestNotFound();
+        }
+
+        return TypedResults.Ok(manifest.AppId);
     }
+
+    public async Task<Results<Ok<string>, NotFound>> GetSteamApplicationName()
+    {
+        SteamManifest? manifest = await TryGetManifest();
+        if (manifest == null)
+        {
+            return ManifestNotFound();
+        }
+
+        return TypedResults.Ok(manifest.AppName);
+    }
+
+    public async Task<Results<Ok<string>, NotFound>> GetSteamBuildId()
+    {
+        SteamManifest? manifest = await TryGetManifest();
+        if (manifest == null)
+        {
+            return ManifestNotFound();
+        }
+
+        return TypedResults.Ok(manifest.BuildId);
+    }
+
+    public async Task<Results<Ok<long>, NotFound>> GetSteamApplicationSize()
+    {
+        SteamManifest? manifest = await TryGetManifest();
+        if (manifest == null)
+        {
+            return ManifestNotFound();
+        }
+
+        return TypedResults.Ok(manifest.AppSize);
+    }
+
+    async Task<SteamManifest?> TryGetManifest() => (await _rawDataService.GetData())?.SteamManifest;
 
     static NotFound ManifestNotFound() => TypedResults.NotFound();
 
-    public static void Map(WebApplication app, string? routePrefix = null)
+    public static void Map(WebApplication app)
     {
         app.MapGet("v1/application/steam/id", ([FromServices] PalworldSteamApplicationEndpoints endpoints) => endpoints.GetSteamApplicationId())
             .WithVersion("v1")
