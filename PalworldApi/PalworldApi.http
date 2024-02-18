@@ -1,0 +1,11 @@
+@PalworldApi_HostAddress = http://localhost:5036
+
+GET {{PalworldApi_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{PalworldApi_HostAddress}}/todos/1
+Accept: application/json
+
+###
