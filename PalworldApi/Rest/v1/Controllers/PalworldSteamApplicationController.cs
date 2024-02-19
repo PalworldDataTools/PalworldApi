@@ -11,13 +11,13 @@ namespace PalworldApi.Rest.v1.Controllers;
 [Route("v1/application/steam")]
 [OpenApiTag("Steam application")]
 [OpenApiVersion("v1")]
-public class PalworldSteamApplicationEndpoints : ControllerBase
+public class PalworldSteamApplicationController : ControllerBase
 {
     const string Tags = "Steam application";
 
     readonly RawDataService _rawDataService;
 
-    public PalworldSteamApplicationEndpoints(RawDataService rawDataService)
+    public PalworldSteamApplicationController(RawDataService rawDataService)
     {
         _rawDataService = rawDataService;
     }

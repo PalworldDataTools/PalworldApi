@@ -10,11 +10,11 @@ namespace PalworldApi.Rest.v1.Controllers;
 [Route("v1/palworld")]
 [OpenApiTag("Palworld")]
 [OpenApiVersion("v1")]
-public class PalworldDataEndpoints : ControllerBase
+public class PalworldDataController : ControllerBase
 {
     readonly RawDataService _rawDataService;
 
-    public PalworldDataEndpoints(RawDataService rawDataService)
+    public PalworldDataController(RawDataService rawDataService)
     {
         _rawDataService = rawDataService;
     }
