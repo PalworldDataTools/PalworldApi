@@ -29,7 +29,7 @@ public class PalsController : ControllerBase
     /// <remarks>
     ///     Get the names of all the tribes.
     /// </remarks>
-    [HttpGet("names")]
+    [HttpGet]
     [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<IEnumerable<string>>, ProblemHttpResult>> GetTribeNames()
