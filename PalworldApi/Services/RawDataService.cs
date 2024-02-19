@@ -9,7 +9,7 @@ public class RawDataService
     {
         { "steam-13390747", "steam-13390747.json" }
     };
-    const string DefaultVersion = "steam-13390747";
+    internal const string DefaultVersion = "steam-13390747";
 
     readonly ILogger<RawDataService> _logger;
     readonly Dictionary<string, ExtractedData> _cachedData = new();
@@ -20,8 +20,6 @@ public class RawDataService
     }
 
     public IReadOnlyCollection<string> GetVersions() => Versions.Keys;
-
-    public async Task<ExtractedData?> GetData() => await GetData(DefaultVersion);
 
     public async Task<ExtractedData?> GetData(string version)
     {

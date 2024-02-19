@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Services;
 using PalworldDataExtractor.Models;
@@ -7,10 +8,12 @@ using PalworldDataExtractor.Models.Pals;
 
 namespace PalworldApi.Rest.v1.Controllers;
 
-public class PalsEndpoints
+[ApiController]
+[Route("v1/pals")]
+[OpenApiTag("Pals")]
+[OpenApiVersion("v1")]
+public class PalsEndpoints : ControllerBase
 {
-    const string Tags = "Pals";
-
     readonly RawDataService _rawDataService;
 
     public PalsEndpoints(RawDataService rawDataService)
@@ -18,53 +21,54 @@ public class PalsEndpoints
         _rawDataService = rawDataService;
     }
 
-    public async Task<Results<Ok<Pal>, NotFound>> GetPal(string name)
+    /// <summary>
+    ///     Get Pal
+    /// </summary>
+    /// <remarks>
+    ///     Get the pal with the given name. If multiple variants of the pal are found, the main one is returned. The main variant is the one that is not a boss, nor a gym boss.
+    /// </remarks>
+    /// <param name="name">The name of the pal to get</param>
+    /// <returns>The pal with the given name</returns>
+    [HttpGet("{name}")]
+    [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetPal(string name)
     {
-        ExtractedData? data = await _rawDataService.GetData();
+        ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
         {
-            return DataNotFound();
+            return DataNotFound(RawDataService.DefaultVersion);
         }
 
         Pal? pal = data.Tribes.FirstOrDefault(t => t.Name == name)?.Pals.FirstOrDefault();
         if (pal == null)
         {
-            return PalNotFound();
+            return PalNotFound(name);
         }
 
         return TypedResults.Ok(pal);
     }
 
-    public async Task<Results<Ok<IEnumerable<string>>, NotFound>> GetPalNames()
+    /// <summary>
+    ///     Get pal names
+    /// </summary>
+    /// <remarks>
+    ///     "Get the names of all the pals."
+    /// </remarks>
+    [HttpGet("names")]
+    [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<IEnumerable<string>>, ProblemHttpResult>> GetPalNames()
     {
-        ExtractedData? data = await _rawDataService.GetData();
+        ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
         {
-            return DataNotFound();
+            return DataNotFound(RawDataService.DefaultVersion);
         }
 
         return TypedResults.Ok(data.Tribes.Select(t => t.Name));
     }
 
-    static NotFound PalNotFound() => TypedResults.NotFound();
-    static NotFound DataNotFound() => TypedResults.NotFound();
-
-    public static void Map(WebApplication app)
-    {
-        app.MapGet("v1/pals/names", ([FromServices] PalsEndpoints endpoints) => endpoints.GetPalNames())
-            .WithVersion("v1")
-            .WithTags(Tags)
-            .WithName(nameof(GetPalNames))
-            .WithSummary("Get pal names")
-            .WithDescription("Get the names of all the pals.");
-
-        app.MapGet("v1/pals/{name}", ([FromServices] PalsEndpoints endpoints, string name) => endpoints.GetPal(name))
-            .WithVersion("v1")
-            .WithTags(Tags)
-            .WithName(nameof(GetPal))
-            .WithSummary("Get pal")
-            .WithDescription(
-                "Get the pal with the given name. If multiple variants of the pal are found, the main one is returned. The main variant is the one that is not a boss, nor a gym boss."
-            );
-    }
+    static ProblemHttpResult PalNotFound(string name) => TypedResults.Problem($"Could not find pal with name: {name}", statusCode: StatusCodes.Status404NotFound);
+    static ProblemHttpResult DataNotFound(string version) => TypedResults.Problem($"Could not find data for version: {version}", statusCode: StatusCodes.Status404NotFound);
 }

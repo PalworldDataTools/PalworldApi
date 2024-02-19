@@ -1,4 +1,5 @@
-﻿using NSwag.Generation.AspNetCore;
+﻿using System.Reflection;
+using NSwag.Generation.AspNetCore;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
@@ -21,11 +22,18 @@ public class VersionProcessor : IOperationProcessor
         }
 
         VersionMetadata? versionMetadata = aspNetCoreOperationProcessorContext.ApiDescription.ActionDescriptor.EndpointMetadata.OfType<VersionMetadata>().FirstOrDefault();
-        if (versionMetadata == null)
+        if (versionMetadata != null)
         {
-            return false;
+            return versionMetadata.Version == ExpectedVersion;
         }
 
-        return versionMetadata.Version == ExpectedVersion;
+        OpenApiVersionAttribute? versionAttribute = aspNetCoreOperationProcessorContext.MethodInfo.GetCustomAttribute<OpenApiVersionAttribute>()
+                                                    ?? aspNetCoreOperationProcessorContext.MethodInfo.DeclaringType?.GetCustomAttribute<OpenApiVersionAttribute>();
+        if (versionAttribute != null)
+        {
+            return versionAttribute.Version == ExpectedVersion;
+        }
+
+        return false;
     }
 }

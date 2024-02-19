@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Services;
 using PalworldDataExtractor.Models.Steam;
 
 namespace PalworldApi.Rest.v1.Controllers;
 
-public class PalworldSteamApplicationEndpoints
+[ApiController]
+[Route("v1/application/steam")]
+[OpenApiTag("Steam application")]
+[OpenApiVersion("v1")]
+public class PalworldSteamApplicationEndpoints : ControllerBase
 {
     const string Tags = "Steam application";
 
@@ -17,82 +22,92 @@ public class PalworldSteamApplicationEndpoints
         _rawDataService = rawDataService;
     }
 
-    public async Task<Results<Ok<string>, NotFound>> GetSteamApplicationId()
+    /// <summary>
+    ///     Get steam application id
+    /// </summary>
+    /// <remarks>
+    ///     Get the application ID of the steam version of the game.
+    /// </remarks>
+    /// <returns>The ID of the steam application of the game</returns>
+    [HttpGet("id")]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<string>, ProblemHttpResult>> GetSteamApplicationId()
     {
         SteamManifest? manifest = await TryGetManifest();
         if (manifest == null)
         {
-            return ManifestNotFound();
+            return ManifestNotFound(RawDataService.DefaultVersion);
         }
 
         return TypedResults.Ok(manifest.AppId);
     }
 
-    public async Task<Results<Ok<string>, NotFound>> GetSteamApplicationName()
+    /// <summary>
+    ///     Get steam application name
+    /// </summary>
+    /// <remarks>
+    ///     Get the name of the steam version of the game.
+    /// </remarks>
+    /// <returns>The name of the steam application of the game</returns>
+    [HttpGet("name")]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<string>, ProblemHttpResult>> GetSteamApplicationName()
     {
         SteamManifest? manifest = await TryGetManifest();
         if (manifest == null)
         {
-            return ManifestNotFound();
+            return ManifestNotFound(RawDataService.DefaultVersion);
         }
 
         return TypedResults.Ok(manifest.AppName);
     }
 
-    public async Task<Results<Ok<string>, NotFound>> GetSteamBuildId()
+    /// <summary>
+    ///     Get steam application build id
+    /// </summary>
+    /// <remarks>
+    ///     Get the build ID of the steam version of the game.
+    /// </remarks>
+    /// <returns>The build id of the steam application of the game</returns>
+    [HttpGet("build-id")]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<string>, ProblemHttpResult>> GetSteamBuildId()
     {
         SteamManifest? manifest = await TryGetManifest();
         if (manifest == null)
         {
-            return ManifestNotFound();
+            return ManifestNotFound(RawDataService.DefaultVersion);
         }
 
         return TypedResults.Ok(manifest.BuildId);
     }
 
-    public async Task<Results<Ok<long>, NotFound>> GetSteamApplicationSize()
+    /// <summary>
+    ///     Get steam application size
+    /// </summary>
+    /// <remarks>
+    ///     Get the size of the steam version of the game.
+    /// </remarks>
+    /// <returns>The size of the steam application of the game</returns>
+    [HttpGet("size")]
+    [ProducesResponseType<long>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<long>, ProblemHttpResult>> GetSteamApplicationSize()
     {
         SteamManifest? manifest = await TryGetManifest();
         if (manifest == null)
         {
-            return ManifestNotFound();
+            return ManifestNotFound(RawDataService.DefaultVersion);
         }
 
         return TypedResults.Ok(manifest.AppSize);
     }
 
-    async Task<SteamManifest?> TryGetManifest() => (await _rawDataService.GetData())?.SteamManifest;
+    async Task<SteamManifest?> TryGetManifest() => (await _rawDataService.GetData(RawDataService.DefaultVersion))?.SteamManifest;
 
-    static NotFound ManifestNotFound() => TypedResults.NotFound();
-
-    public static void Map(WebApplication app)
-    {
-        app.MapGet("v1/application/steam/id", ([FromServices] PalworldSteamApplicationEndpoints endpoints) => endpoints.GetSteamApplicationId())
-            .WithVersion("v1")
-            .WithTags(Tags)
-            .WithName(nameof(GetSteamApplicationId))
-            .WithSummary("Get steam application id")
-            .WithDescription("Get the application ID of the steam version of the game.");
-
-        app.MapGet("v1/application/steam/name", ([FromServices] PalworldSteamApplicationEndpoints endpoints) => endpoints.GetSteamApplicationName())
-            .WithVersion("v1")
-            .WithTags(Tags)
-            .WithName(nameof(GetSteamApplicationName))
-            .WithSummary("Get steam application name")
-            .WithDescription("Get the name of the steam version of the game.");
-
-        app.MapGet("v1/application/steam/build-id", ([FromServices] PalworldSteamApplicationEndpoints endpoints) => endpoints.GetSteamBuildId())
-            .WithVersion("v1")
-            .WithTags(Tags)
-            .WithName(nameof(GetSteamBuildId))
-            .WithSummary("Get steam application build id")
-            .WithDescription("Get the build ID of the steam version of the game.");
-
-        app.MapGet("v1/application/steam/size", ([FromServices] PalworldSteamApplicationEndpoints endpoints) => endpoints.GetSteamApplicationSize())
-            .WithVersion("v1")
-            .WithTags(Tags)
-            .WithName(nameof(GetSteamApplicationSize))
-            .WithSummary("Get steam application size")
-            .WithDescription("Get the size of the steam version of the game.");
-    }
+    static ProblemHttpResult ManifestNotFound(string version) =>
+        TypedResults.Problem($"Could not find steam manifest for version: {version}", statusCode: StatusCodes.Status404NotFound);
 }

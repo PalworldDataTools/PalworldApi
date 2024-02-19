@@ -1,16 +1,10 @@
 ﻿using PalworldApi.Rest.OpenApi;
-using PalworldApi.Rest.v1.Controllers;
 
 namespace PalworldApi.Rest.v1;
 
 public static class ApiV1Extensions
 {
-    public static void AddV1(this IServiceCollection services)
-    {
-        services.AddSingleton<PalworldSteamApplicationEndpoints>();
-        services.AddSingleton<PalworldDataEndpoints>();
-        services.AddSingleton<PalsEndpoints>();
-
+    public static void AddV1(this IServiceCollection services) =>
         services.AddOpenApiDocument(
             opt =>
             {
@@ -22,12 +16,4 @@ public static class ApiV1Extensions
                 opt.OperationProcessors.Add(new DotnetOpenApiProcessor());
             }
         );
-    }
-
-    public static void UseV1(this WebApplication app)
-    {
-        PalworldSteamApplicationEndpoints.Map(app);
-        PalworldDataEndpoints.Map(app);
-        PalsEndpoints.Map(app);
-    }
 }

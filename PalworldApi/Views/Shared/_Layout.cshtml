@@ -1,21 +1,22 @@
 ﻿<!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
     <title>Palworld API</title>
+
+    <meta charset="utf-8"/>
 
     <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
     <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
     <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
     <link href="/site.webmanifest" rel="manifest">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css"/>
 </head>
 <body>
-<div>
-    <h1>Welcome to the Palworld API</h1>
-    <ul>
-        <li>OpenApi document: <a href="swagger/v1/swagger.json">v1</a></li>
-        <li>Swagger UI: <a href="swagger">v1</a></li>
-    </ul>
-</div>
+
+@RenderBody()
+
 </body>
 </html>

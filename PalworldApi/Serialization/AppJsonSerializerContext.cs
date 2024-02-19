@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using PalworldDataExtractor.Models;
 using PalworldDataExtractor.Models.Pals;
 
 namespace PalworldApi.Serialization;

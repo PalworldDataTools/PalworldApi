@@ -5,11 +5,18 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>true</InvariantGlobalization>
-        <PublishAot>true</PublishAot>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <DebugSymbols Condition="'$(Configuration)' == 'Release'">false</DebugSymbols>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="8.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="8.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.2" />
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.1" />
       <PackageReference Include="NSwag.AspNetCore" Version="14.0.3" />
       <PackageReference Include="PalworldDataExtractor.Lib" Version="0.2.6" />
     </ItemGroup>
@@ -22,6 +29,20 @@
       <Content Update="wwwroot\*">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Site\Views\Home\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Site\Views\Shared\Error.cshtml" />
+      <_ContentIncludedByDefault Remove="Site\Views\Shared\_Layout.cshtml" />
+      <_ContentIncludedByDefault Remove="Site\Views\_ViewImports.cshtml" />
+      <_ContentIncludedByDefault Remove="Site\Views\_ViewStart.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Home\Index.cshtml" />
+      <AdditionalFiles Include="Views\Shared\Error.cshtml" />
+      <AdditionalFiles Include="Views\Shared\_Layout.cshtml" />
     </ItemGroup>
 
 </Project>
