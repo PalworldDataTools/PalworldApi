@@ -2,7 +2,14 @@ using PalworldApi.Rest.v1;
 using PalworldApi.Serialization;
 using PalworldApi.Services;
 
+const string developmentCorsPolicy = "_DEVELOPMENT";
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddProblemDetails();
+builder.Services.AddCors(
+    options => { options.AddPolicy(developmentCorsPolicy, policy => policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()); }
+);
 
 builder.Services.AddSingleton<AppJsonSerializerContext>();
 builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default); });
@@ -14,8 +21,6 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddV1();
 
-builder.Services.AddProblemDetails();
-
 builder.Logging.AddAzureWebAppDiagnostics();
 
 WebApplication app = builder.Build();
@@ -24,6 +29,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseStatusCodePages();
+
+    app.UseCors(developmentCorsPolicy);
 }
 else
 {
