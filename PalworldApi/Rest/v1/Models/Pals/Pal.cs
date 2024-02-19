@@ -77,7 +77,7 @@ public class Pal
 
 public static class PalMappingExtensions
 {
-    public static Pal ToV1(PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
+    public static Pal ToV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
         {
             Identity = pal.ToIdentityV1(),

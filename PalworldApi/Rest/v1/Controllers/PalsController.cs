@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
 using PalworldDataExtractor.Abstractions;
-using PalworldDataExtractor.Abstractions.Pals;
 
 namespace PalworldApi.Rest.v1.Controllers;
 
@@ -40,13 +40,13 @@ public class PalsController : ControllerBase
             return DataNotFound(RawDataService.DefaultVersion);
         }
 
-        Pal? pal = data.Tribes.FirstOrDefault(t => t.Name == name)?.Pals.FirstOrDefault();
+        PalworldDataExtractor.Abstractions.Pals.Pal? pal = data.Tribes.FirstOrDefault(t => t.Name == name)?.Pals.FirstOrDefault();
         if (pal == null)
         {
             return PalNotFound(name);
         }
 
-        return TypedResults.Ok(pal);
+        return TypedResults.Ok(pal.ToV1());
     }
 
     /// <summary>
