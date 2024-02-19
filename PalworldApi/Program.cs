@@ -5,6 +5,7 @@ using PalworldApi.Services;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddProblemDetails();
+builder.Services.AddCors(opt => opt.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 
 builder.Services.AddSingleton<AppJsonSerializerContext>();
 builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default); });
@@ -36,9 +37,9 @@ app.UseSwaggerUi();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseCors();
-
 app.UseRouting();
+
+app.UseCors();
 
 app.MapDefaultControllerRoute();
 
