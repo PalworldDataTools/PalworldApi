@@ -22,7 +22,7 @@ public class PalSensors
 
 public static class PalSensorsMappingExtensions
 {
-    public static PalSensors ToSensorsV1(this PalworldDataExtractor.Models.Pals.Pal pal) =>
+    public static PalSensors ToSensorsV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
         {
             ViewingDistance = pal.ViewingDistance,

@@ -32,7 +32,7 @@ public class PalCombat
 
 public static class PalCombatMappingExtensions
 {
-    public static PalCombat ToCombatV1(this PalworldDataExtractor.Models.Pals.Pal pal) =>
+    public static PalCombat ToCombatV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
         {
             Hp = pal.Hp,

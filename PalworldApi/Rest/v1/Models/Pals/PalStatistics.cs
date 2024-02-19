@@ -57,7 +57,7 @@ public class PalStatistics
 
 public static class PalStatisticsMappingExtensions
 {
-    public static PalStatistics ToStatisticsV1(this PalworldDataExtractor.Models.Pals.Pal pal) =>
+    public static PalStatistics ToStatisticsV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
         {
             Size = pal.Size.ToPalSize(),

@@ -22,7 +22,7 @@ public class PalIdentity
 
 public static class PalIdentityMappingExtensions
 {
-    public static PalIdentity ToIdentityV1(this PalworldDataExtractor.Models.Pals.Pal pal) =>
+    public static PalIdentity ToIdentityV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
         {
             TribeName = pal.TribeName ?? "??",

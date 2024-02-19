@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Services;
-using PalworldDataExtractor.Models.Steam;
+using PalworldDataExtractor.Abstractions.Steam;
 
 namespace PalworldApi.Rest.v1.Controllers;
 

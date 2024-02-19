@@ -82,7 +82,7 @@ public class PalWork
 
 public static class PalWorkMappingExtensions
 {
-    public static PalWork ToWorkV1(this PalworldDataExtractor.Models.Pals.Pal pal) =>
+    public static PalWork ToWorkV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
         {
             CraftSpeed = pal.CraftSpeed,

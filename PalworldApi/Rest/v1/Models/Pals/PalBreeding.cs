@@ -19,7 +19,7 @@ public class PalBreeding
 
 public static class PalBreedingMappingExtensions
 {
-    public static PalBreeding ToBreedingV1(this PalworldDataExtractor.Models.Pals.Pal pal) =>
+    public static PalBreeding ToBreedingV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
         {
             MaleProbability = pal.MaleProbability,

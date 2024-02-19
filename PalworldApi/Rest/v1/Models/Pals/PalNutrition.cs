@@ -22,7 +22,7 @@ public class PalNutrition
 
 public static class PalNutritionMappingExtensions
 {
-    public static PalNutrition ToNutritionV1(this PalworldDataExtractor.Models.Pals.Pal pal) =>
+    public static PalNutrition ToNutritionV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
         {
             MaxFullStomach = pal.MaxFullStomach,

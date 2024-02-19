@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using PalworldDataExtractor.Models;
+using PalworldDataExtractor.Abstractions;
 
 namespace PalworldApi.Services;
 
