@@ -14,6 +14,7 @@ static class ApiV1Extensions
                 opt.Version = "1.0.0";
                 opt.OperationProcessors.Add(new VersionProcessor("v1"));
                 opt.OperationProcessors.Add(new DotnetOpenApiProcessor());
+                opt.DocumentProcessors.Add(new IncludeAdditionalModelsDocumentProcessor());
             }
         );
 }

@@ -1,8 +1,11 @@
+using PalworldApi.Rest.OpenApi;
+
 namespace PalworldApi.Models.Search;
 
 /// <summary>
 ///     Pagination parameters of a search
 /// </summary>
+[IncludeInOpenApi]
 public class PaginationRequest
 {
     /// <summary>

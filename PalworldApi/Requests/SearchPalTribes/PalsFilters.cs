@@ -1,4 +1,5 @@
 ﻿using PalworldApi.Models.Search;
+using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.v1.Models.Pals;
 
 namespace PalworldApi.Requests.SearchPalTribes;
@@ -6,6 +7,7 @@ namespace PalworldApi.Requests.SearchPalTribes;
 /// <summary>
 ///     Filter parameters used to search pals
 /// </summary>
+[IncludeInOpenApi]
 public class PalsFilters
 {
     /// <summary>
