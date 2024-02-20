@@ -11,6 +11,7 @@ namespace PalworldApi.Rest.v1.Controllers;
 [Route("v1/application/steam")]
 [OpenApiTag("Steam application")]
 [OpenApiVersion("v1")]
+[ResponseCache(CacheProfileName = Constants.ResponseCacheDefaultProfile)]
 public class PalworldSteamApplicationController : ControllerBase
 {
     const string Tags = "Steam application";

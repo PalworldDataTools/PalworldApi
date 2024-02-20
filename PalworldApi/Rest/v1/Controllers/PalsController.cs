@@ -14,6 +14,7 @@ namespace PalworldApi.Rest.v1.Controllers;
 [Route("v1/pals")]
 [OpenApiTag("Pals")]
 [OpenApiVersion("v1")]
+[ResponseCache(CacheProfileName = Constants.ResponseCacheLongTermProfile)]
 public class PalsController : ControllerBase
 {
     readonly RawDataService _rawDataService;
@@ -80,6 +81,7 @@ public class PalsController : ControllerBase
     /// <param name="tribeName">The name of the tribe to get</param>
     /// <returns>The icon of the given tribe</returns>
     [HttpGet("{tribeName}/icon")]
+    [ResponseCache(CacheProfileName = Constants.ResponseCacheLongTermProfile)]
     [ProducesResponseType<ActionResult>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<FileContentHttpResult, ProblemHttpResult>> GetIcon(string tribeName)
