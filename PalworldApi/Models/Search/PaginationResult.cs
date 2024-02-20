@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace PalworldApi.Models.Search;
 
 /// <summary>
@@ -8,20 +10,20 @@ public class PaginationResult
     /// <summary>
     ///     The current page number
     /// </summary>
-    public required int PageNumber { get; set; }
+    [Required] public required int PageNumber { get; set; }
 
     /// <summary>
     ///     The number of results per page
     /// </summary>
-    public required int PageSize { get; set; }
+    [Required] public required int PageSize { get; set; }
 
     /// <summary>
     ///     The total number of results
     /// </summary>
-    public required int TotalCount { get; set; }
+    [Required] public required int TotalCount { get; set; }
 
     /// <summary>
     ///     The total number of pages
     /// </summary>
-    public required int TotalPages { get; set; }
+    [Required] public required int TotalPages { get; set; }
 }

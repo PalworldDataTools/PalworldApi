@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace PalworldApi.Models.Search;
 
 /// <summary>
@@ -8,12 +10,12 @@ public class SearchResult<TResult>
     /// <summary>
     ///     The current page of results
     /// </summary>
-    public required IReadOnlyCollection<TResult> Results { get; set; }
+    [Required] public required IReadOnlyCollection<TResult> Results { get; set; }
 
     /// <summary>
     ///     The pagination information of the result
     /// </summary>
-    public required PaginationResult Pagination { get; set; }
+    [Required] public required PaginationResult Pagination { get; set; }
 }
 
 static class SearchResultMappingExtensions
