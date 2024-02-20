@@ -36,7 +36,7 @@ public class PalsController : ControllerBase
     }
 
     /// <summary>
-    ///     Get tribe names
+    ///     Search tribes
     /// </summary>
     /// <remarks>
     ///     Get the names of all the tribes.
@@ -58,7 +58,7 @@ public class PalsController : ControllerBase
     }
 
     /// <summary>
-    ///     Get Tribe
+    ///     Get tribe
     /// </summary>
     /// <remarks>
     ///     Get the tribe of pals with the given name.
@@ -86,7 +86,7 @@ public class PalsController : ControllerBase
     }
 
     /// <summary>
-    ///     Get Pal Icon
+    ///     Get tribe icon
     /// </summary>
     /// <remarks>
     ///     Get the icon of the given tribe.
@@ -114,7 +114,7 @@ public class PalsController : ControllerBase
     }
 
     /// <summary>
-    ///     Get Pal
+    ///     Get pal
     /// </summary>
     /// <remarks>
     ///     Get the main pal of the given tribe. The main pal is the one that is neither a boss, nor a gym boss.
@@ -148,7 +148,7 @@ public class PalsController : ControllerBase
     }
 
     /// <summary>
-    ///     Get BOSS Pal
+    ///     Get BOSS pal
     /// </summary>
     /// <remarks>
     ///     Get the boss pal of the given tribe.
@@ -182,7 +182,7 @@ public class PalsController : ControllerBase
     }
 
     /// <summary>
-    ///     Get GYM Pal
+    ///     Get GYM pal
     /// </summary>
     /// <remarks>
     ///     Get the gym pal of the given tribe.
