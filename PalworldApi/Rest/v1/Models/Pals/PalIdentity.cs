@@ -20,7 +20,7 @@ public class PalIdentity
     [Required] public required string DisplayName { get; set; }
 }
 
-public static class PalIdentityMappingExtensions
+static class PalIdentityMappingExtensions
 {
     public static PalIdentity ToIdentityV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()

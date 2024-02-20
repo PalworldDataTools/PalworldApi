@@ -2,7 +2,7 @@
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
-public class PalWork
+public class PalWorkSuitability
 {
     /// <summary>
     ///     The craft speed of the pal
@@ -82,7 +82,7 @@ public class PalWork
 
 public static class PalWorkMappingExtensions
 {
-    public static PalWork ToWorkV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
+    public static PalWorkSuitability ToWorkV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
         {
             CraftSpeed = pal.CraftSpeed,

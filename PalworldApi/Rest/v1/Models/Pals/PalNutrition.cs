@@ -20,7 +20,7 @@ public class PalNutrition
     [Required] public required int FoodAmount { get; set; }
 }
 
-public static class PalNutritionMappingExtensions
+static class PalNutritionMappingExtensions
 {
     public static PalNutrition ToNutritionV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()

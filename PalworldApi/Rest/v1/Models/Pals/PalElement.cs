@@ -2,19 +2,58 @@
 
 public enum PalElement
 {
+    /// <summary>
+    ///     Unknown element
+    /// </summary>
     Unknown,
+
+    /// <summary>
+    ///     The dark element
+    /// </summary>
     Dark,
+
+    /// <summary>
+    ///     The dragon element
+    /// </summary>
     Dragon,
+
+    /// <summary>
+    ///     The earth element
+    /// </summary>
     Earth,
+
+    /// <summary>
+    ///     The electricity element
+    /// </summary>
     Electricity,
+
+    /// <summary>
+    ///     The fire element
+    /// </summary>
     Fire,
+
+    /// <summary>
+    ///     The ice element
+    /// </summary>
     Ice,
+
+    /// <summary>
+    ///     The leaf element
+    /// </summary>
     Leaf,
+
+    /// <summary>
+    ///     The normal element
+    /// </summary>
     Normal,
+
+    /// <summary>
+    ///     The water element
+    /// </summary>
     Water
 }
 
-public static class PalElementMappingExtensions
+static class PalElementMappingExtensions
 {
     public static PalElement ToPalElement(this string size) =>
         size switch

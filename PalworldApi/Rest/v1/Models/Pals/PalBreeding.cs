@@ -17,7 +17,7 @@ public class PalBreeding
     [Required] public required int BreedingRank { get; set; }
 }
 
-public static class PalBreedingMappingExtensions
+static class PalBreedingMappingExtensions
 {
     public static PalBreeding ToBreedingV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()

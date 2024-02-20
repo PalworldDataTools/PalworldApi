@@ -72,10 +72,10 @@ public class Pal
     /// <summary>
     ///     The work statistics of the pal
     /// </summary>
-    [Required] public required PalWork Work { get; set; }
+    [Required] public required PalWorkSuitability WorkSuitability { get; set; }
 }
 
-public static class PalMappingExtensions
+static class PalMappingExtensions
 {
     public static Pal ToV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
@@ -93,6 +93,6 @@ public static class PalMappingExtensions
             Nutrition = pal.ToNutritionV1(),
             Combat = pal.ToCombatV1(),
             Breeding = pal.ToBreedingV1(),
-            Work = pal.ToWorkV1()
+            WorkSuitability = pal.ToWorkV1()
         };
 }

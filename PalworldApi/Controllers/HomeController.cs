@@ -2,7 +2,7 @@
 
 namespace PalworldApi.Controllers;
 
-public class HomeController : Controller
+class HomeController : Controller
 {
     public IActionResult Index() => View();
 

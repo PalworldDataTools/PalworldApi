@@ -2,15 +2,38 @@
 
 public enum PalSize
 {
+    /// <summary>
+    ///     Unknown size
+    /// </summary>
     Unknown,
+
+    /// <summary>
+    ///     The XS size
+    /// </summary>
     XS,
+
+    /// <summary>
+    ///     The S size
+    /// </summary>
     S,
+
+    /// <summary>
+    ///     The M size
+    /// </summary>
     M,
+
+    /// <summary>
+    ///     The L size
+    /// </summary>
     L,
+
+    /// <summary>
+    ///     The XL size
+    /// </summary>
     XL
 }
 
-public static class PalSizeMappingExtensions
+static class PalSizeMappingExtensions
 {
     public static PalSize ToPalSize(this string size) =>
         size switch

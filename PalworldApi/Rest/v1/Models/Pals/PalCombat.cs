@@ -30,7 +30,7 @@ public class PalCombat
     [Required] public required int Support { get; set; }
 }
 
-public static class PalCombatMappingExtensions
+static class PalCombatMappingExtensions
 {
     public static PalCombat ToCombatV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()

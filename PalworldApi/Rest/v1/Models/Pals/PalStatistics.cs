@@ -55,7 +55,7 @@ public class PalStatistics
     [Required] public required float Price { get; set; }
 }
 
-public static class PalStatisticsMappingExtensions
+static class PalStatisticsMappingExtensions
 {
     public static PalStatistics ToStatisticsV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()

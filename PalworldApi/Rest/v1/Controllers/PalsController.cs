@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using PalworldApi.Models.Search;
+using PalworldApi.Requests.SearchPalTribes;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
@@ -18,10 +21,12 @@ namespace PalworldApi.Rest.v1.Controllers;
 public class PalsController : ControllerBase
 {
     readonly RawDataService _rawDataService;
+    readonly IMediator _mediator;
 
-    public PalsController(RawDataService rawDataService)
+    public PalsController(RawDataService rawDataService, IMediator mediator)
     {
         _rawDataService = rawDataService;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -33,7 +38,7 @@ public class PalsController : ControllerBase
     [HttpGet]
     [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
-    public async Task<Results<Ok<IEnumerable<string>>, ProblemHttpResult>> GetTribeNames()
+    public async Task<Results<Ok<SearchResult<PalTribe>>, ProblemHttpResult>> SearchTribes([FromQuery] SearchRequest<PalsFilters> request)
     {
         ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
@@ -41,7 +46,9 @@ public class PalsController : ControllerBase
             return DataNotFound(RawDataService.DefaultVersion);
         }
 
-        return TypedResults.Ok(data.Tribes.Select(t => t.Name));
+        SearchResult<PalworldDataExtractor.Abstractions.Pals.PalTribe> searchResult = await _mediator.Send(new SearchPalTribesRequest { Data = data, SearchRequest = request });
+
+        return TypedResults.Ok(searchResult.Select(tribe => tribe.ToV1()));
     }
 
     /// <summary>

@@ -20,7 +20,7 @@ public class PalSensors
     [Required] public required float HearingRate { get; set; }
 }
 
-public static class PalSensorsMappingExtensions
+static class PalSensorsMappingExtensions
 {
     public static PalSensors ToSensorsV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()
