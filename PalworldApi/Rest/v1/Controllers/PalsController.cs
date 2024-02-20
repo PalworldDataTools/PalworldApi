@@ -36,7 +36,7 @@ public class PalsController : ControllerBase
     ///     Get the names of all the tribes.
     /// </remarks>
     [HttpGet]
-    [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<SearchResult<PalTribe>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<SearchResult<PalTribe>>, ProblemHttpResult>> SearchTribes([FromQuery] SearchRequest<PalsFilters> request)
     {
