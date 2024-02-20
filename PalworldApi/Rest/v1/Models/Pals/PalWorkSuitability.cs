@@ -2,6 +2,9 @@
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
+/// <summary>
+///     Work suitability of a pal
+/// </summary>
 public class PalWorkSuitability
 {
     /// <summary>
@@ -80,7 +83,7 @@ public class PalWorkSuitability
     [Required] public required int Farming { get; init; }
 }
 
-public static class PalWorkMappingExtensions
+static class PalWorkMappingExtensions
 {
     public static PalWorkSuitability ToWorkV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
         new()

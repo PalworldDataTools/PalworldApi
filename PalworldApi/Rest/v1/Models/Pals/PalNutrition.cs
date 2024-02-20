@@ -2,6 +2,9 @@
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
+/// <summary>
+///     Nutrition statistics of a pal
+/// </summary>
 public class PalNutrition
 {
     /// <summary>

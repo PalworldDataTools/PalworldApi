@@ -1,6 +1,6 @@
 ﻿namespace PalworldApi.Rest.OpenApi;
 
-public class VersionMetadata
+class VersionMetadata
 {
     public string Version { get; }
 
@@ -10,7 +10,7 @@ public class VersionMetadata
     }
 }
 
-public static class VersionMetadataExtensions
+static class VersionMetadataExtensions
 {
     public static TBuilder WithVersion<TBuilder>(this TBuilder builder, string version) where TBuilder: IEndpointConventionBuilder =>
         builder.WithMetadata(new VersionMetadata(version));

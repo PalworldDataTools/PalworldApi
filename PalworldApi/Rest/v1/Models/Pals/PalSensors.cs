@@ -2,6 +2,9 @@
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
+/// <summary>
+///     Sensors statistics of a pal
+/// </summary>
 public class PalSensors
 {
     /// <summary>

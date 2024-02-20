@@ -5,7 +5,7 @@ using NSwag.Generation.Processors.Contexts;
 
 namespace PalworldApi.Rest.OpenApi;
 
-public class VersionProcessor : IOperationProcessor
+class VersionProcessor : IOperationProcessor
 {
     public VersionProcessor(string expectedVersion)
     {

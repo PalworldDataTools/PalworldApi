@@ -6,16 +6,22 @@ using PalworldApi.Services;
 
 namespace PalworldApi.Rest.v1.Controllers;
 
+/// <summary>
+///     Get data about the Palworld API application itself
+/// </summary>
 [ApiController]
 [Route("v1/palworld")]
 [OpenApiTag("Palworld")]
 [OpenApiVersion("v1")]
 [ResponseCache(CacheProfileName = Constants.ResponseCacheDefaultProfile)]
-public class PalworldDataController : ControllerBase
+public class PalworldApiController : ControllerBase
 {
     readonly RawDataService _rawDataService;
 
-    public PalworldDataController(RawDataService rawDataService)
+    /// <summary>
+    ///     Create the pals data controller
+    /// </summary>
+    public PalworldApiController(RawDataService rawDataService)
     {
         _rawDataService = rawDataService;
     }

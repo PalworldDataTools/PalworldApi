@@ -7,6 +7,9 @@ using PalworldDataExtractor.Abstractions.Steam;
 
 namespace PalworldApi.Rest.v1.Controllers;
 
+/// <summary>
+///     Get data about the steam application of the game
+/// </summary>
 [ApiController]
 [Route("v1/application/steam")]
 [OpenApiTag("Steam application")]
@@ -14,10 +17,12 @@ namespace PalworldApi.Rest.v1.Controllers;
 [ResponseCache(CacheProfileName = Constants.ResponseCacheDefaultProfile)]
 public class PalworldSteamApplicationController : ControllerBase
 {
-    const string Tags = "Steam application";
-
     readonly RawDataService _rawDataService;
 
+    /// <summary>
+    ///     Create the palworld steam application controller
+    /// </summary>
+    /// <param name="rawDataService"></param>
     public PalworldSteamApplicationController(RawDataService rawDataService)
     {
         _rawDataService = rawDataService;

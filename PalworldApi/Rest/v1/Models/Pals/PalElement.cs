@@ -1,5 +1,8 @@
 ﻿namespace PalworldApi.Rest.v1.Models.Pals;
 
+/// <summary>
+///     Elements that pals or skills can have
+/// </summary>
 public enum PalElement
 {
     /// <summary>

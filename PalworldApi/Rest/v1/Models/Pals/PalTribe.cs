@@ -2,6 +2,11 @@
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
+/// <summary>
+///     Tribe of pals. A tribe is a collection of pal variants that look the same but vary in statistics.
+///     For example, there might be a pal, its boss variant and its gym boss variant in the same tribe.
+///     There could also be variants of different elements with different spells that are meant to live in different biomes.
+/// </summary>
 public class PalTribe
 {
     /// <summary>

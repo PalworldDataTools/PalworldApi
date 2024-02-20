@@ -2,6 +2,9 @@
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
+/// <summary>
+///     Pals are the main entities of Palworld. They are the creatures that can be captured and used to fight or work.
+/// </summary>
 public class Pal
 {
     /// <summary>

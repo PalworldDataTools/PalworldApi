@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
+/// <summary>
+///     Identity of a pal
+/// </summary>
 public class PalIdentity
 {
     /// <summary>

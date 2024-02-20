@@ -2,7 +2,7 @@
 
 namespace PalworldApi.Rest.v1;
 
-public static class ApiV1Extensions
+static class ApiV1Extensions
 {
     public static void AddV1(this IServiceCollection services) =>
         services.AddOpenApiDocument(

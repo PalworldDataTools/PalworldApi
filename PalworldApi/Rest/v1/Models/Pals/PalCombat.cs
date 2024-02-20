@@ -2,6 +2,9 @@
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
+/// <summary>
+///     Combat statistics of a pal
+/// </summary>
 public class PalCombat
 {
     /// <summary>

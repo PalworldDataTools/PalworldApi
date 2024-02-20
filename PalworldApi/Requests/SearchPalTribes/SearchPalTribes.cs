@@ -15,7 +15,7 @@ class SearchPalTribes : IRequestHandler<SearchPalTribesRequest, SearchResult<Pal
         _rawDataService = rawDataService;
     }
 
-    public async Task<SearchResult<PalTribe>> Handle(SearchPalTribesRequest request, CancellationToken cancellationToken)
+    public Task<SearchResult<PalTribe>> Handle(SearchPalTribesRequest request, CancellationToken cancellationToken)
     {
         IEnumerable<PalTribe> result = request.Data.Tribes;
 
@@ -24,7 +24,7 @@ class SearchPalTribes : IRequestHandler<SearchPalTribesRequest, SearchResult<Pal
             result = Filter(result, request.SearchRequest.Filter);
         }
 
-        return SearchUtils.Paginate(result, request.SearchRequest.Pagination);
+        return Task.FromResult(SearchUtils.Paginate(result, request.SearchRequest.Pagination));
     }
 
     static IEnumerable<PalTribe> Filter(IEnumerable<PalTribe> result, PalsFilters filters)

@@ -1,5 +1,8 @@
 ﻿namespace PalworldApi.Rest.v1.Models.Pals;
 
+/// <summary>
+///     Sizes that the pals can have
+/// </summary>
 public enum PalSize
 {
     /// <summary>

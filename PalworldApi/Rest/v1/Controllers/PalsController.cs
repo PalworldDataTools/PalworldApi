@@ -13,6 +13,9 @@ using PalTribe = PalworldApi.Rest.v1.Models.Pals.PalTribe;
 
 namespace PalworldApi.Rest.v1.Controllers;
 
+/// <summary>
+///     Get data about pals
+/// </summary>
 [ApiController]
 [Route("v1/pals")]
 [OpenApiTag("Pals")]
@@ -23,6 +26,9 @@ public class PalsController : ControllerBase
     readonly RawDataService _rawDataService;
     readonly IMediator _mediator;
 
+    /// <summary>
+    ///     Create the pals controller
+    /// </summary>
     public PalsController(RawDataService rawDataService, IMediator mediator)
     {
         _rawDataService = rawDataService;

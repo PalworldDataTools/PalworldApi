@@ -5,7 +5,7 @@ using NSwag.Generation.Processors.Contexts;
 
 namespace PalworldApi.Rest.OpenApi;
 
-public class DotnetOpenApiProcessor : IOperationProcessor
+class DotnetOpenApiProcessor : IOperationProcessor
 {
     public bool Process(OperationProcessorContext context)
     {
