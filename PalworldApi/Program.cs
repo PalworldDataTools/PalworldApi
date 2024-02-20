@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using PalworldApi;
 using PalworldApi.Rest.v1;
@@ -24,18 +25,20 @@ try
 
     builder.Services.AddMvc();
     builder.Services.AddControllers(
-        opt =>
-        {
-            opt.CacheProfiles.Add(
-                Constants.ResponseCacheDefaultProfile,
-                new CacheProfile { Duration = (int)TimeSpan.FromMinutes(1).TotalSeconds, Location = ResponseCacheLocation.Any }
-            );
-            opt.CacheProfiles.Add(
-                Constants.ResponseCacheLongTermProfile,
-                new CacheProfile { Duration = (int)TimeSpan.FromDays(1).TotalSeconds, Location = ResponseCacheLocation.Any }
-            );
-        }
-    );
+            opt =>
+            {
+                opt.CacheProfiles.Add(
+                    Constants.ResponseCacheDefaultProfile,
+                    new CacheProfile { Duration = (int)TimeSpan.FromMinutes(1).TotalSeconds, Location = ResponseCacheLocation.Any }
+                );
+                opt.CacheProfiles.Add(
+                    Constants.ResponseCacheLongTermProfile,
+                    new CacheProfile { Duration = (int)TimeSpan.FromDays(1).TotalSeconds, Location = ResponseCacheLocation.Any }
+                );
+            }
+        )
+        .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    ;
     builder.Services.AddEndpointsApiExplorer();
 
     builder.Services.AddV1();
