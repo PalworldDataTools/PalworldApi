@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using PalworldApi.Models;
 using PalworldApi.Models.Search;
 using PalworldApi.Requests.SearchPalTribes;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
-using PalworldDataExtractor.Abstractions;
 using Pal = PalworldApi.Rest.v1.Models.Pals.Pal;
 using PalTribe = PalworldApi.Rest.v1.Models.Pals.PalTribe;
 
@@ -46,7 +46,7 @@ public class PalsController : ControllerBase
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<SearchResult<PalTribe>>, ProblemHttpResult>> SearchTribes([FromQuery] SearchRequest<PalsFilters> request)
     {
-        ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
@@ -70,13 +70,13 @@ public class PalsController : ControllerBase
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<PalTribe>, ProblemHttpResult>> GetTribe(string tribeName)
     {
-        ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
         }
 
-        PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Tribes.FirstOrDefault(t => t.Name == tribeName);
+        PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Data.Tribes.FirstOrDefault(t => t.Name == tribeName);
         if (tribe == null)
         {
             return TribeNotFound(tribeName);
@@ -99,13 +99,13 @@ public class PalsController : ControllerBase
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<FileContentHttpResult, ProblemHttpResult>> GetIcon(string tribeName)
     {
-        ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
         }
 
-        if (!data.TribeIcons.TryGetValue(tribeName, out byte[]? icon))
+        if (!data.Data.TribeIcons.TryGetValue(tribeName, out byte[]? icon))
         {
             return TribeNotFound(tribeName);
         }
@@ -126,13 +126,13 @@ public class PalsController : ControllerBase
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetPal(string tribeName)
     {
-        ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
         }
 
-        PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Tribes.FirstOrDefault(t => t.Name == tribeName);
+        PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Data.Tribes.FirstOrDefault(t => t.Name == tribeName);
         if (tribe == null)
         {
             return TribeNotFound(tribeName);
@@ -160,13 +160,13 @@ public class PalsController : ControllerBase
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetBossPal(string tribeName)
     {
-        ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
         }
 
-        PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Tribes.FirstOrDefault(t => t.Name == tribeName);
+        PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Data.Tribes.FirstOrDefault(t => t.Name == tribeName);
         if (tribe == null)
         {
             return TribeNotFound(tribeName);
@@ -194,13 +194,13 @@ public class PalsController : ControllerBase
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetGymPal(string tribeName)
     {
-        ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
         }
 
-        PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Tribes.FirstOrDefault(t => t.Name == tribeName);
+        PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Data.Tribes.FirstOrDefault(t => t.Name == tribeName);
         if (tribe == null)
         {
             return TribeNotFound(tribeName);

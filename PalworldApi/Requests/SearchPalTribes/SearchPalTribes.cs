@@ -10,7 +10,7 @@ class SearchPalTribes : IRequestHandler<SearchPalTribesRequest, SearchResult<Pal
 {
     public Task<SearchResult<PalTribe>> Handle(SearchPalTribesRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<PalTribe> result = request.Data.Tribes;
+        IEnumerable<PalTribe> result = request.Data.Data.Tribes;
 
         if (request.SearchRequest.Filter != null)
         {

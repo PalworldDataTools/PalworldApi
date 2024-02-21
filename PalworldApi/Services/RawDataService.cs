@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using PalworldApi.Models;
 using PalworldDataExtractor.Abstractions;
 
 namespace PalworldApi.Services;
@@ -19,7 +20,7 @@ public class RawDataService
     public const string DefaultVersion = "steam-13390747";
 
     readonly ILogger<RawDataService> _logger;
-    readonly Dictionary<string, ExtractedData> _cachedData = new();
+    readonly Dictionary<string, VersionedData> _cachedData = new();
 
     /// <summary>
     ///     Create the raw data service
@@ -39,9 +40,9 @@ public class RawDataService
     /// </summary>
     /// <param name="version">The requested version of the game</param>
     /// <returns>The extracted data from the requested version of the game</returns>
-    public async Task<ExtractedData?> GetData(string version)
+    public async Task<VersionedData?> GetData(string version)
     {
-        if (_cachedData.TryGetValue(version, out ExtractedData? cachedData))
+        if (_cachedData.TryGetValue(version, out VersionedData? cachedData))
         {
             return cachedData;
         }
@@ -49,7 +50,7 @@ public class RawDataService
         return await LoadAndCache(version);
     }
 
-    async Task<ExtractedData?> LoadAndCache(string version)
+    async Task<VersionedData?> LoadAndCache(string version)
     {
         if (!Versions.TryGetValue(version, out string? resourcePath))
         {
@@ -70,8 +71,9 @@ public class RawDataService
 
         _logger.LogInformation("Palworld data has been loaded: {version}", version);
 
-        _cachedData[version] = data;
+        VersionedData versionedData = new() { Version = version, Data = data };
+        _cachedData[version] = versionedData;
 
-        return data;
+        return versionedData;
     }
 }

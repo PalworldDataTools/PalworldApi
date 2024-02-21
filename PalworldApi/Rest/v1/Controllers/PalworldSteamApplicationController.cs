@@ -112,7 +112,7 @@ public class PalworldSteamApplicationController : ControllerBase
         return TypedResults.Ok(manifest.AppSize);
     }
 
-    async Task<SteamManifest?> TryGetManifest() => (await _rawDataService.GetData(RawDataService.DefaultVersion))?.SteamManifest;
+    async Task<SteamManifest?> TryGetManifest() => (await _rawDataService.GetData(RawDataService.DefaultVersion))?.Data.SteamManifest;
 
     static ProblemHttpResult ManifestNotFound(string version) =>
         TypedResults.Problem($"Could not find steam manifest for version: {version}", statusCode: StatusCodes.Status404NotFound);

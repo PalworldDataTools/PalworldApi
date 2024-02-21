@@ -3,11 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using PalworldApi.Models;
 using PalworldApi.Requests.Breeding;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
-using PalworldDataExtractor.Abstractions;
 using PalTribe = PalworldDataExtractor.Abstractions.Pals.PalTribe;
 
 namespace PalworldApi.Rest.v1.Controllers;
@@ -19,7 +19,6 @@ namespace PalworldApi.Rest.v1.Controllers;
 [Route("v1/pals/breed")]
 [OpenApiTag("Breeding")]
 [OpenApiVersion("v1")]
-[ResponseCache(CacheProfileName = Constants.ResponseCacheDefaultProfile)]
 public class PalBreedingController : ControllerBase
 {
     readonly RawDataService _rawDataService;
@@ -45,7 +44,7 @@ public class PalBreedingController : ControllerBase
     [ProducesResponseType<ProblemHttpResult>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetBreedingResult(string palNameA, string palNameB)
     {
-        ExtractedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
@@ -66,9 +65,9 @@ public class PalBreedingController : ControllerBase
         return TypedResults.Ok(child.ToV1());
     }
 
-    static bool TryFindPal(ExtractedData data, string palName, [NotNullWhen(true)] out PalworldDataExtractor.Abstractions.Pals.Pal? pal)
+    static bool TryFindPal(VersionedData data, string palName, [NotNullWhen(true)] out PalworldDataExtractor.Abstractions.Pals.Pal? pal)
     {
-        pal = data.Tribes.SelectMany(t => t.Pals).FirstOrDefault(t => t.Name == palName);
+        pal = data.Data.Tribes.SelectMany(t => t.Pals).FirstOrDefault(t => t.Name == palName);
         return pal != null;
     }
 
