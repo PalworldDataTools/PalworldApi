@@ -13,14 +13,19 @@ public class PalIdentity
     [Required] public required string TribeName { get; set; }
 
     /// <summary>
+    ///     The index of the pal in the paldex
+    /// </summary>
+    [Required] public required int PaldexIndex { get; set; }
+
+    /// <summary>
+    ///     The suffix appended to the paldex index. This suffix is used to identify variants of the same pal.
+    /// </summary>
+    [Required] public required string? PaldexIndexSuffix { get; set; }
+
+    /// <summary>
     ///     The unique ID of the pal
     /// </summary>
     [Required] public required string Name { get; set; }
-
-    /// <summary>
-    ///     The nice representation of the name of the pal
-    /// </summary>
-    [Required] public required string DisplayName { get; set; }
 }
 
 static class PalIdentityMappingExtensions
@@ -30,6 +35,7 @@ static class PalIdentityMappingExtensions
         {
             TribeName = pal.TribeName ?? "??",
             Name = pal.Name,
-            DisplayName = pal.DisplayName
+            PaldexIndex = pal.ZukanIndex,
+            PaldexIndexSuffix = string.IsNullOrWhiteSpace(pal.ZukanIndexSuffix) || pal.ZukanIndexSuffix == "None" ? null : pal.ZukanIndexSuffix
         };
 }
