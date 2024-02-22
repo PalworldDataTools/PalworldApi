@@ -21,16 +21,13 @@ try
     builder.Services.AddSingleton<AppJsonSerializerContext>();
     builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default); });
 
-    builder.Services.AddSingleton<RawDataService>(provider => new RawDataService(provider.GetRequiredService<ILogger<RawDataService>>()));
+    builder.Services.AddSingleton<RawDataService>();
+    builder.Services.AddSingleton<LocalizationService>();
 
     builder.Services.AddMvc();
     builder.Services.AddControllers(
             opt =>
             {
-                opt.CacheProfiles.Add(
-                    Constants.ResponseCacheDefaultProfile,
-                    new CacheProfile { Duration = (int)TimeSpan.FromMinutes(1).TotalSeconds, Location = ResponseCacheLocation.Any }
-                );
                 opt.CacheProfiles.Add(
                     Constants.ResponseCacheLongTermProfile,
                     new CacheProfile { Duration = (int)TimeSpan.FromDays(1).TotalSeconds, Location = ResponseCacheLocation.Any }
