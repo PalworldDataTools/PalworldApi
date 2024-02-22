@@ -17,6 +17,8 @@ class SearchPalTribes : IRequestHandler<SearchPalTribesRequest, SearchResult<Pal
             result = Filter(result, request.SearchRequest.Filter);
         }
 
+        result = Sort(result);
+
         return Task.FromResult(SearchUtils.Paginate(result, request.SearchRequest.Pagination));
     }
 
@@ -132,6 +134,8 @@ class SearchPalTribes : IRequestHandler<SearchPalTribesRequest, SearchResult<Pal
 
         return result;
     }
+
+    static IEnumerable<PalTribe> Sort(IEnumerable<PalTribe> tribes) => tribes.OrderBy(t => t.Pals.Select(p => p.ZukanIndex).Where(i => i > 0).DefaultIfEmpty(int.MaxValue).Min());
 
     static Func<PalTribe, bool> AtLeastOneVariantHasValueInRange(Func<Pal, int> getValue, IntRangeFilter range) => AtLeastOneVariantSatisfies(p => range.Contains(getValue(p)));
 
