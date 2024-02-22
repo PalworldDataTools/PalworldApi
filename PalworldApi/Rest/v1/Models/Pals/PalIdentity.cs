@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using PalworldApi.Services;
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
@@ -26,16 +27,22 @@ public class PalIdentity
     ///     The unique ID of the pal
     /// </summary>
     [Required] public required string Name { get; set; }
+
+    /// <summary>
+    ///     The localized name of the pal
+    /// </summary>
+    public string? LocalizedName { get; set; }
 }
 
 static class PalIdentityMappingExtensions
 {
-    public static PalIdentity ToIdentityV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
+    public static PalIdentity ToIdentityV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal, Localizer? localizer = null) =>
         new()
         {
             TribeName = pal.TribeName ?? "??",
             Name = pal.Name,
+            LocalizedName = localizer?.Localize($"DT_PalNameText.PAL_NAME_{pal.TribeName}"),
             PaldexIndex = pal.ZukanIndex,
-            PaldexIndexSuffix = pal.ZukanIndexSuffix
+            PaldexIndexSuffix = string.IsNullOrWhiteSpace(pal.ZukanIndexSuffix) ? null : pal.ZukanIndexSuffix
         };
 }

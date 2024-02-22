@@ -23,15 +23,17 @@ namespace PalworldApi.Rest.v1.Controllers;
 public class PalsController : ControllerBase
 {
     readonly RawDataService _rawDataService;
+    readonly LocalizationService _localizationService;
     readonly IMediator _mediator;
 
     /// <summary>
     ///     Create the pals controller
     /// </summary>
-    public PalsController(RawDataService rawDataService, IMediator mediator)
+    public PalsController(RawDataService rawDataService, IMediator mediator, LocalizationService localizationService)
     {
         _rawDataService = rawDataService;
         _mediator = mediator;
+        _localizationService = localizationService;
     }
 
     /// <summary>
@@ -53,7 +55,9 @@ public class PalsController : ControllerBase
 
         SearchResult<PalworldDataExtractor.Abstractions.Pals.PalTribe> searchResult = await _mediator.Send(new SearchPalTribesRequest { Data = data, SearchRequest = request });
 
-        return TypedResults.Ok(searchResult.Select(tribe => tribe.ToV1()));
+        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+
+        return TypedResults.Ok(searchResult.Select(tribe => tribe.ToV1(localizer)));
     }
 
     /// <summary>
@@ -81,7 +85,9 @@ public class PalsController : ControllerBase
             return TribeNotFound(tribeName);
         }
 
-        return TypedResults.Ok(tribe.ToV1());
+        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+
+        return TypedResults.Ok(tribe.ToV1(localizer));
     }
 
     /// <summary>
@@ -139,7 +145,9 @@ public class PalsController : ControllerBase
 
         PalworldDataExtractor.Abstractions.Pals.Pal mainPal = tribe.GetMainPal();
 
-        return TypedResults.Ok(mainPal.ToV1());
+        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+
+        return TypedResults.Ok(mainPal.ToV1(localizer));
     }
 
     /// <summary>
@@ -173,7 +181,9 @@ public class PalsController : ControllerBase
             return PalNotFound(tribeName, "boss");
         }
 
-        return TypedResults.Ok(mainPal.ToV1());
+        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+
+        return TypedResults.Ok(mainPal.ToV1(localizer));
     }
 
     /// <summary>
@@ -207,7 +217,9 @@ public class PalsController : ControllerBase
             return PalNotFound(tribeName, "gym");
         }
 
-        return TypedResults.Ok(mainPal.ToV1());
+        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+
+        return TypedResults.Ok(mainPal.ToV1(localizer));
     }
 
     static ProblemHttpResult PalNotFound(string name, string variant) =>

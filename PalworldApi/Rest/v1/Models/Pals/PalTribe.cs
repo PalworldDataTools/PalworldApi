@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using PalworldApi.Services;
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
@@ -15,6 +16,11 @@ public class PalTribe
     [Required] public required string Name { get; set; }
 
     /// <summary>
+    ///     The localized name of the tribe
+    /// </summary>
+    public string? LocalizedName { get; set; }
+
+    /// <summary>
     ///     The pals in the tribe
     /// </summary>
     [Required] public required Pal[] Pals { get; set; }
@@ -22,7 +28,8 @@ public class PalTribe
 
 static class PalTribeMappingExtensions
 {
-    public static PalTribe ToV1(this PalworldDataExtractor.Abstractions.Pals.PalTribe tribe) => new() { Name = tribe.Name, Pals = tribe.Pals.Select(p => p.ToV1()).ToArray() };
+    public static PalTribe ToV1(this PalworldDataExtractor.Abstractions.Pals.PalTribe tribe, Localizer? localizer = null) =>
+        new() { Name = tribe.Name, LocalizedName = localizer?.Localize($"DT_PalNameText.PAL_NAME_{tribe.Name}"), Pals = tribe.Pals.Select(p => p.ToV1(localizer)).ToArray() };
 }
 
 static class PalTribeExtensions

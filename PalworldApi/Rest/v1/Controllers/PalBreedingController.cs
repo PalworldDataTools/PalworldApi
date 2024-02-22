@@ -22,15 +22,17 @@ namespace PalworldApi.Rest.v1.Controllers;
 public class PalBreedingController : ControllerBase
 {
     readonly RawDataService _rawDataService;
+    readonly LocalizationService _localizationService;
     readonly IMediator _mediator;
 
     /// <summary>
     ///     Create the pal breeding controller
     /// </summary>
-    public PalBreedingController(RawDataService rawDataService, IMediator mediator)
+    public PalBreedingController(RawDataService rawDataService, LocalizationService localizationService, IMediator mediator)
     {
         _rawDataService = rawDataService;
         _mediator = mediator;
+        _localizationService = localizationService;
     }
 
     /// <summary>
@@ -62,7 +64,9 @@ public class PalBreedingController : ControllerBase
 
         PalworldDataExtractor.Abstractions.Pals.Pal child = await _mediator.Send(new BreedPalsRequest { Data = data, PalA = palA, PalB = palB });
 
-        return TypedResults.Ok(child.ToV1());
+        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+
+        return TypedResults.Ok(child.ToV1(localizer));
     }
 
     /// <summary>
@@ -88,7 +92,9 @@ public class PalBreedingController : ControllerBase
 
         IReadOnlyCollection<Requests.Breeding.PalCouple> couples = await _mediator.Send(new UnbreedPalsRequest { Data = data, Pal = pal });
 
-        return TypedResults.Ok(couples.Select(c => c.ToV1()).ToArray());
+        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+
+        return TypedResults.Ok(couples.Select(c => c.ToV1(localizer)).ToArray());
     }
 
     static bool TryFindPal(VersionedData data, string palName, [NotNullWhen(true)] out PalworldDataExtractor.Abstractions.Pals.Pal? pal)

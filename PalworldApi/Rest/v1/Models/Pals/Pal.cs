@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using PalworldApi.Services;
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
@@ -80,10 +81,10 @@ public class Pal
 
 static class PalMappingExtensions
 {
-    public static Pal ToV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal) =>
+    public static Pal ToV1(this PalworldDataExtractor.Abstractions.Pals.Pal pal, Localizer? localizer = null) =>
         new()
         {
-            Identity = pal.ToIdentityV1(),
+            Identity = pal.ToIdentityV1(localizer),
             IsBoss = pal.IsBoss,
             IsGymBoss = pal.IsTowerBoss,
             IsNocturnal = pal.IsNocturnal,

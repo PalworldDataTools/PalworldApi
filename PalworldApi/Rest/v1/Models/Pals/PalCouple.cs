@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using PalworldApi.Services;
 
 namespace PalworldApi.Rest.v1.Models.Pals;
 
@@ -20,5 +21,6 @@ public class PalCouple
 
 static class PalCoupleMappingExtensions
 {
-    public static PalCouple ToV1(this Requests.Breeding.PalCouple couple) => new() { PalA = couple.PalA.ToV1(), PalB = couple.PalB.ToV1() };
+    public static PalCouple ToV1(this Requests.Breeding.PalCouple couple, Localizer? localizer = null) =>
+        new() { PalA = couple.PalA.ToV1(localizer), PalB = couple.PalB.ToV1(localizer) };
 }
