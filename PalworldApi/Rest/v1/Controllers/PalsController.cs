@@ -20,7 +20,6 @@ namespace PalworldApi.Rest.v1.Controllers;
 [Route("v1/pals")]
 [OpenApiTag("Pals")]
 [OpenApiVersion("v1")]
-[ResponseCache(CacheProfileName = Constants.ResponseCacheDefaultProfile)]
 public class PalsController : ControllerBase
 {
     readonly RawDataService _rawDataService;
