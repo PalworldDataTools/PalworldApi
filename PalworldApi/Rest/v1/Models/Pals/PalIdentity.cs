@@ -36,6 +36,6 @@ static class PalIdentityMappingExtensions
             TribeName = pal.TribeName ?? "??",
             Name = pal.Name,
             PaldexIndex = pal.ZukanIndex,
-            PaldexIndexSuffix = string.IsNullOrWhiteSpace(pal.ZukanIndexSuffix) || pal.ZukanIndexSuffix == "None" ? null : pal.ZukanIndexSuffix
+            PaldexIndexSuffix = pal.ZukanIndexSuffix
         };
 }
