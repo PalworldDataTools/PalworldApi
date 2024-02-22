@@ -138,11 +138,7 @@ public class PalsController : ControllerBase
             return TribeNotFound(tribeName);
         }
 
-        PalworldDataExtractor.Abstractions.Pals.Pal? mainPal = tribe.Pals.FirstOrDefault(p => p is { IsBoss: false, IsTowerBoss: false }) ?? tribe.Pals.FirstOrDefault();
-        if (mainPal == null)
-        {
-            return PalNotFound(tribeName, "main");
-        }
+        PalworldDataExtractor.Abstractions.Pals.Pal mainPal = tribe.GetMainPal();
 
         return TypedResults.Ok(mainPal.ToV1());
     }
@@ -172,7 +168,7 @@ public class PalsController : ControllerBase
             return TribeNotFound(tribeName);
         }
 
-        PalworldDataExtractor.Abstractions.Pals.Pal? mainPal = tribe.Pals.FirstOrDefault(p => p is { IsBoss: true, IsTowerBoss: false });
+        PalworldDataExtractor.Abstractions.Pals.Pal? mainPal = tribe.GetBossPal();
         if (mainPal == null)
         {
             return PalNotFound(tribeName, "boss");
@@ -206,7 +202,7 @@ public class PalsController : ControllerBase
             return TribeNotFound(tribeName);
         }
 
-        PalworldDataExtractor.Abstractions.Pals.Pal? mainPal = tribe.Pals.FirstOrDefault(p => p is { IsTowerBoss: true });
+        PalworldDataExtractor.Abstractions.Pals.Pal? mainPal = tribe.GetGymPal();
         if (mainPal == null)
         {
             return PalNotFound(tribeName, "gym");

@@ -8,21 +8,21 @@ namespace PalworldApi.Requests.Breeding;
 class BreedPals : IRequestHandler<BreedPalsRequest, Pal>
 {
     static readonly CombinationCache Cache = new();
+    static readonly Dictionary<string, IReadOnlyCollection<Pal>> PalsWithoutUniqueCombination = new();
 
     public Task<Pal> Handle(BreedPalsRequest request, CancellationToken cancellationToken)
     {
-        if (Cache.TryFindCachedValue(request.Data.Version, request.PalA.Name, request.PalB.Name, out Pal? cachedChild))
+        if (Cache.TryFind(request.Data.Version, request.PalA.Name, request.PalB.Name, out Pal? cachedChild))
         {
             return Task.FromResult(cachedChild);
         }
 
-        if (request.PalA.TribeName != null
-            && request.PalB.TribeName != null
-            && TryFindUniqueCombination(request.Data, request.PalA.TribeName, request.PalB.TribeName, out string? child))
+        if (request is { IncludeUniqueCombinations: true, PalA.TribeName: not null, PalB.TribeName: not null }
+            && TryFindUniqueCombination(request.Data, request.PalA.TribeName, request.PalB.TribeName, out string? childName))
         {
-            if (!TryFindPal(request.Data, child, out Pal? childPal))
+            if (!TryFindPal(request.Data, childName, out Pal? childPal))
             {
-                throw new Exception($"Could not find pal with name {child}");
+                throw new Exception($"Could not find pal with name {childName}");
             }
 
             return Task.FromResult(childPal);
@@ -30,12 +30,39 @@ class BreedPals : IRequestHandler<BreedPalsRequest, Pal>
 
         int combiRankA = request.PalA.CombiRank;
         int combiRankB = request.PalB.CombiRank;
-        int mean = (int)Math.Floor((float)(combiRankA + combiRankB + 1) / 2);
-        Pal closestPal = request.Data.Data.Tribes.SelectMany(t => t.Pals).Where(p => p is { IsBoss: false, IsTowerBoss: false }).OrderBy(p => Math.Abs(p.CombiRank - mean)).First();
+        double mean = (float)(combiRankA + combiRankB) / 2;
+        Pal[] closestPals = GetPalsWithoutUniqueCombination(request.Data)
+            .Select(p => new { Pal = p, Rank = Math.Abs(p.CombiRank - mean) })
+            .GroupBy(x => x.Rank)
+            .OrderBy(g => g.Key)
+            .Select(g => g.Select(x => x.Pal))
+            .First()
+            .ToArray();
 
-        Cache.CacheResult(request.Data.Version, request.PalA.Name, request.PalB.Name, closestPal);
+        // If multiple pals are tied, select the one with the smallest Zukan index
+        Pal child = closestPals.Length switch
+        {
+            1 => closestPals[0],
+            _ => closestPals.OrderBy(p => p.ZukanIndex).First()
+        };
 
-        return Task.FromResult(closestPal);
+        Cache.Add(request.Data.Version, request.PalA.Name, request.PalB.Name, child);
+
+        return Task.FromResult(child);
+    }
+
+    static IReadOnlyCollection<Pal> GetPalsWithoutUniqueCombination(VersionedData data)
+    {
+        if (!PalsWithoutUniqueCombination.TryGetValue(data.Version, out IReadOnlyCollection<Pal>? result))
+        {
+            result = data.Data.Tribes.SelectMany(t => t.Pals)
+                .Where(p => p is { CombiRank: not 0, IsBoss: false, IsTowerBoss: false })
+                .Where(p => data.Data.UniqueBreedingCombinations.All(c => c.ChildCharacterId != p.Name))
+                .ToArray();
+            PalsWithoutUniqueCombination[data.Version] = result;
+        }
+
+        return result;
     }
 
     static bool TryFindUniqueCombination(VersionedData data, string tribeNameA, string tribeNameB, [NotNullWhen(true)] out string? result)
@@ -50,12 +77,11 @@ class BreedPals : IRequestHandler<BreedPalsRequest, Pal>
         return pal != null;
     }
 
-
     class CombinationCache
     {
         readonly Dictionary<string, List<CombinationCacheEntry>> _combinationsCache = new();
 
-        public bool TryFindCachedValue(string version, string palA, string palB, [NotNullWhen(true)] out Pal? pal)
+        public bool TryFind(string version, string palA, string palB, [NotNullWhen(true)] out Pal? pal)
         {
             if (!_combinationsCache.TryGetValue(version, out List<CombinationCacheEntry>? cachedValues))
             {
@@ -67,7 +93,7 @@ class BreedPals : IRequestHandler<BreedPalsRequest, Pal>
             return pal != null;
         }
 
-        public void CacheResult(string version, string palA, string palB, Pal child)
+        public void Add(string version, string palA, string palB, Pal child)
         {
             if (!_combinationsCache.TryGetValue(version, out List<CombinationCacheEntry>? entries))
             {
@@ -92,4 +118,5 @@ class BreedPalsRequest : IRequest<Pal>
     public required VersionedData Data { get; init; }
     public required Pal PalA { get; init; }
     public required Pal PalB { get; init; }
+    public bool IncludeUniqueCombinations { get; init; } = true;
 }

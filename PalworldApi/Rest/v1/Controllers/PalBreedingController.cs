@@ -8,6 +8,7 @@ using PalworldApi.Requests.Breeding;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
+using PalCouple = PalworldApi.Rest.v1.Models.Pals.PalCouple;
 using PalTribe = PalworldDataExtractor.Abstractions.Pals.PalTribe;
 
 namespace PalworldApi.Rest.v1.Controllers;
@@ -16,7 +17,7 @@ namespace PalworldApi.Rest.v1.Controllers;
 ///     Get data about breeding
 /// </summary>
 [ApiController]
-[Route("v1/pals/breed")]
+[Route("v1/pals")]
 [OpenApiTag("Breeding")]
 [OpenApiVersion("v1")]
 public class PalBreedingController : ControllerBase
@@ -39,7 +40,7 @@ public class PalBreedingController : ControllerBase
     /// <param name="palNameA">The name of the first pal</param>
     /// <param name="palNameB">The name of the second pal</param>
     /// <returns>The name of the tribe that is the result of the breeding</returns>
-    [HttpGet]
+    [HttpGet("breed")]
     [ProducesResponseType<PalTribe>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemHttpResult>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetBreedingResult(string palNameA, string palNameB)
@@ -63,6 +64,32 @@ public class PalBreedingController : ControllerBase
         PalworldDataExtractor.Abstractions.Pals.Pal child = await _mediator.Send(new BreedPalsRequest { Data = data, PalA = palA, PalB = palB });
 
         return TypedResults.Ok(child.ToV1());
+    }
+
+    /// <summary>
+    ///     Get parents
+    /// </summary>
+    /// <param name="palName">The name of the pal</param>
+    /// <returns>The name of the tribe that is the result of the breeding</returns>
+    [HttpGet("{palName}/parents")]
+    [ProducesResponseType<PalTribe>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemHttpResult>(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<PalCouple[]>, ProblemHttpResult>> GetParents(string palName)
+    {
+        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        if (data == null)
+        {
+            return DataNotFound(RawDataService.DefaultVersion);
+        }
+
+        if (!TryFindPal(data, palName, out PalworldDataExtractor.Abstractions.Pals.Pal? pal))
+        {
+            return PalNotFound(palName);
+        }
+
+        IReadOnlyCollection<Requests.Breeding.PalCouple> couples = await _mediator.Send(new UnbreedPalsRequest { Data = data, Pal = pal });
+
+        return TypedResults.Ok(couples.Select(c => c.ToV1()).ToArray());
     }
 
     static bool TryFindPal(VersionedData data, string palName, [NotNullWhen(true)] out PalworldDataExtractor.Abstractions.Pals.Pal? pal)

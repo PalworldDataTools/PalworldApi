@@ -24,3 +24,15 @@ static class PalTribeMappingExtensions
 {
     public static PalTribe ToV1(this PalworldDataExtractor.Abstractions.Pals.PalTribe tribe) => new() { Name = tribe.Name, Pals = tribe.Pals.Select(p => p.ToV1()).ToArray() };
 }
+
+static class PalTribeExtensions
+{
+    public static PalworldDataExtractor.Abstractions.Pals.Pal GetMainPal(this PalworldDataExtractor.Abstractions.Pals.PalTribe tribe) =>
+        tribe.Pals.FirstOrDefault(p => p is { IsBoss: false, IsTowerBoss: false }) ?? tribe.Pals.First();
+
+    public static PalworldDataExtractor.Abstractions.Pals.Pal? GetBossPal(this PalworldDataExtractor.Abstractions.Pals.PalTribe tribe) =>
+        tribe.Pals.FirstOrDefault(p => p is { IsBoss: true, IsTowerBoss: false });
+
+    public static PalworldDataExtractor.Abstractions.Pals.Pal? GetGymPal(this PalworldDataExtractor.Abstractions.Pals.PalTribe tribe) =>
+        tribe.Pals.FirstOrDefault(p => p is { IsTowerBoss: true });
+}
