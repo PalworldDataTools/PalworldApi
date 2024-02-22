@@ -9,7 +9,6 @@ using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
 using PalCouple = PalworldApi.Rest.v1.Models.Pals.PalCouple;
-using PalTribe = PalworldDataExtractor.Abstractions.Pals.PalTribe;
 
 namespace PalworldApi.Rest.v1.Controllers;
 
@@ -41,8 +40,8 @@ public class PalBreedingController : ControllerBase
     /// <param name="palNameB">The name of the second pal</param>
     /// <returns>The name of the tribe that is the result of the breeding</returns>
     [HttpGet("breed")]
-    [ProducesResponseType<PalTribe>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemHttpResult>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetBreedingResult(string palNameA, string palNameB)
     {
         VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
@@ -72,8 +71,8 @@ public class PalBreedingController : ControllerBase
     /// <param name="palName">The name of the pal</param>
     /// <returns>The name of the tribe that is the result of the breeding</returns>
     [HttpGet("{palName}/parents")]
-    [ProducesResponseType<PalTribe>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemHttpResult>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<PalCouple>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<PalCouple[]>, ProblemHttpResult>> GetParents(string palName)
     {
         VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
