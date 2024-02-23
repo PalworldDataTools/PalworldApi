@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Services;
 using PalworldDataExtractor.Abstractions.Steam;
 
@@ -37,9 +38,11 @@ public class PalworldSteamApplicationController : ControllerBase
     [HttpGet("id")]
     [ProducesResponseType<string>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<string>, ProblemHttpResult>> GetSteamApplicationId()
     {
-        SteamManifest? manifest = await TryGetManifest();
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        SteamManifest? manifest = await TryGetManifest(palworldVersion);
         if (manifest == null)
         {
             return ManifestNotFound(RawDataService.DefaultVersion);
@@ -58,9 +61,11 @@ public class PalworldSteamApplicationController : ControllerBase
     [HttpGet("name")]
     [ProducesResponseType<string>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<string>, ProblemHttpResult>> GetSteamApplicationName()
     {
-        SteamManifest? manifest = await TryGetManifest();
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        SteamManifest? manifest = await TryGetManifest(palworldVersion);
         if (manifest == null)
         {
             return ManifestNotFound(RawDataService.DefaultVersion);
@@ -79,9 +84,11 @@ public class PalworldSteamApplicationController : ControllerBase
     [HttpGet("build-id")]
     [ProducesResponseType<string>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<string>, ProblemHttpResult>> GetSteamBuildId()
     {
-        SteamManifest? manifest = await TryGetManifest();
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        SteamManifest? manifest = await TryGetManifest(palworldVersion);
         if (manifest == null)
         {
             return ManifestNotFound(RawDataService.DefaultVersion);
@@ -100,9 +107,11 @@ public class PalworldSteamApplicationController : ControllerBase
     [HttpGet("size")]
     [ProducesResponseType<long>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<long>, ProblemHttpResult>> GetSteamApplicationSize()
     {
-        SteamManifest? manifest = await TryGetManifest();
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        SteamManifest? manifest = await TryGetManifest(palworldVersion);
         if (manifest == null)
         {
             return ManifestNotFound(RawDataService.DefaultVersion);
@@ -111,7 +120,7 @@ public class PalworldSteamApplicationController : ControllerBase
         return TypedResults.Ok(manifest.AppSize);
     }
 
-    async Task<SteamManifest?> TryGetManifest() => (await _rawDataService.GetData(RawDataService.DefaultVersion))?.Data.SteamManifest;
+    async Task<SteamManifest?> TryGetManifest(string? version) => (await _rawDataService.GetData(version ?? RawDataService.DefaultVersion))?.Data.SteamManifest;
 
     static ProblemHttpResult ManifestNotFound(string version) =>
         TypedResults.Problem($"Could not find steam manifest for version: {version}", statusCode: StatusCodes.Status404NotFound);

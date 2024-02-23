@@ -8,16 +8,14 @@ namespace PalworldApi.Rest.OpenApi.AcceptLanguage;
 
 class AddAcceptLanguageHeaderOperationProcessor : IOperationProcessor
 {
-    public AddAcceptLanguageHeaderOperationProcessor(string name, IReadOnlyCollection<string> values, string? defaultValue = null)
+    public AddAcceptLanguageHeaderOperationProcessor(IReadOnlyCollection<string> availableLanguages, string? defaultLanguage = null)
     {
-        Name = name;
-        Values = values;
-        DefaultValue = defaultValue;
+        AvailableLanguages = availableLanguages;
+        DefaultLanguage = defaultLanguage;
     }
 
-    public string Name { get; private set; }
-    public IReadOnlyCollection<string> Values { get; private set; }
-    public string? DefaultValue { get; private set; }
+    public IReadOnlyCollection<string> AvailableLanguages { get; private set; }
+    public string? DefaultLanguage { get; private set; }
 
     public bool Process(OperationProcessorContext context)
     {
@@ -29,7 +27,7 @@ class AddAcceptLanguageHeaderOperationProcessor : IOperationProcessor
 
         OpenApiParameter parameter = new()
         {
-            Name = Name,
+            Name = "Accept-Language",
             Kind = OpenApiParameterKind.Header,
             Schema = new JsonSchema
             {
@@ -40,10 +38,10 @@ class AddAcceptLanguageHeaderOperationProcessor : IOperationProcessor
             IsNullableRaw = true,
             Description = "The Accept-Language request HTTP header indicates the natural language and locale that the client prefers. "
                           + "See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language.",
-            Default = DefaultValue ?? Values.FirstOrDefault()
+            Default = DefaultLanguage ?? AvailableLanguages.FirstOrDefault()
         };
 
-        foreach (string value in Values)
+        foreach (string value in AvailableLanguages)
         {
             parameter.Schema.Enumeration.Add(value);
         }

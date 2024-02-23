@@ -8,6 +8,7 @@ using PalworldApi.Models.Search;
 using PalworldApi.Requests.SearchPalTribes;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.OpenApi.AcceptLanguage;
+using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
 using Pal = PalworldApi.Rest.v1.Models.Pals.Pal;
@@ -48,9 +49,11 @@ public class PalsController : ControllerBase
     [ProducesResponseType<SearchResult<PalTribe>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [UseAcceptLanguageHeader]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<SearchResult<PalTribe>>, ProblemHttpResult>> SearchTribes([FromQuery] SearchRequest<PalsFilters> request)
     {
-        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
@@ -76,9 +79,11 @@ public class PalsController : ControllerBase
     [ProducesResponseType<PalTribe>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [UseAcceptLanguageHeader]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<PalTribe>, ProblemHttpResult>> GetTribe(string tribeName)
     {
-        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
@@ -108,9 +113,11 @@ public class PalsController : ControllerBase
     [ResponseCache(CacheProfileName = Constants.ResponseCacheLongTermProfile)]
     [ProducesResponseType<ActionResult>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UsePalworldVersionHeader]
     public async Task<Results<FileContentHttpResult, ProblemHttpResult>> GetIcon(string tribeName)
     {
-        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
@@ -136,9 +143,11 @@ public class PalsController : ControllerBase
     [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [UseAcceptLanguageHeader]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetPal(string tribeName)
     {
-        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
@@ -170,9 +179,11 @@ public class PalsController : ControllerBase
     [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [UseAcceptLanguageHeader]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetBossPal(string tribeName)
     {
-        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
@@ -208,9 +219,11 @@ public class PalsController : ControllerBase
     [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [UseAcceptLanguageHeader]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetGymPal(string tribeName)
     {
-        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);

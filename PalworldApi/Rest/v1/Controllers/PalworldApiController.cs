@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Services;
 
 namespace PalworldApi.Rest.v1.Controllers;
@@ -45,5 +46,10 @@ public class PalworldApiController : ControllerBase
     /// </remarks>
     [HttpGet("languages")]
     [ProducesResponseType<IReadOnlyCollection<string>>(StatusCodes.Status200OK)]
-    public async Task<Ok<IReadOnlyCollection<string>>> GetLanguages() => TypedResults.Ok(await _localizationService.GetLanguages());
+    [UsePalworldVersionHeader]
+    public async Task<Ok<IReadOnlyCollection<string>>> GetLanguages()
+    {
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        return TypedResults.Ok(await _localizationService.GetLanguages(palworldVersion));
+    }
 }

@@ -8,6 +8,7 @@ using PalworldApi.Models;
 using PalworldApi.Requests.Breeding;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.OpenApi.AcceptLanguage;
+using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
 using PalCouple = PalworldApi.Rest.v1.Models.Pals.PalCouple;
@@ -47,9 +48,11 @@ public class PalBreedingController : ControllerBase
     [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [UseAcceptLanguageHeader]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetBreedingResult(string palNameA, string palNameB)
     {
-        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);
@@ -82,9 +85,11 @@ public class PalBreedingController : ControllerBase
     [ProducesResponseType<PalCouple>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [UseAcceptLanguageHeader]
+    [UsePalworldVersionHeader]
     public async Task<Results<Ok<PalCouple[]>, ProblemHttpResult>> GetParents(string palName)
     {
-        VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
+        string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
+        VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
             return DataNotFound(RawDataService.DefaultVersion);

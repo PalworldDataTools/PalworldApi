@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using PalworldApi;
+using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Rest.v1;
 using PalworldApi.Serialization;
 using PalworldApi.Services;
@@ -19,6 +20,7 @@ try
     RawDataService rawDataService = new(loggerFactory.CreateLogger<RawDataService>());
     LocalizationService localizationService = new(rawDataService);
 
+    string[] versions = rawDataService.GetVersions().ToArray();
     string[] languages = (await localizationService.GetLanguages()).ToArray();
 
     WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -57,7 +59,7 @@ try
     );
     builder.Services.AddEndpointsApiExplorer();
 
-    builder.Services.AddV1(languages, LocalizationService.DefaultLanguage);
+    builder.Services.AddV1(opt => opt.ConfigureLanguages(languages, LocalizationService.DefaultLanguage).ConfigureVersions(versions, RawDataService.DefaultVersion));
 
     builder.Logging.ClearProviders();
     builder.Logging.AddAzureWebAppDiagnostics();
@@ -67,6 +69,7 @@ try
     WebApplication app = builder.Build();
 
     app.UseRequestLocalization();
+    app.UseMiddleware<PalworldVersionMiddleware>();
 
     if (app.Environment.IsDevelopment())
     {
