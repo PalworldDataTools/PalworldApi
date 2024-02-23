@@ -8,6 +8,9 @@ namespace PalworldApi.Services;
 /// </summary>
 public class LocalizationService
 {
+    /// <summary>
+    ///     The language that can be used as default value
+    /// </summary>
     public const string DefaultLanguage = "en";
 
     readonly RawDataService _rawDataService;
@@ -33,7 +36,7 @@ public class LocalizationService
             return Array.Empty<string>();
         }
 
-        return data.Data.LocalizationFiles.Keys.ToArray();
+        return data.Data.LocalizationFiles.Keys.Order().ToArray();
     }
 
     /// <summary>
