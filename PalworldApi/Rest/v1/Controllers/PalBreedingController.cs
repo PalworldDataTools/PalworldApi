@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using PalworldApi.Models;
 using PalworldApi.Requests.Breeding;
 using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.OpenApi.AcceptLanguage;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
 using PalCouple = PalworldApi.Rest.v1.Models.Pals.PalCouple;
@@ -44,6 +46,7 @@ public class PalBreedingController : ControllerBase
     [HttpGet("breed")]
     [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UseAcceptLanguageHeader]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetBreedingResult(string palNameA, string palNameB)
     {
         VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
@@ -64,7 +67,8 @@ public class PalBreedingController : ControllerBase
 
         PalworldDataExtractor.Abstractions.Pals.Pal child = await _mediator.Send(new BreedPalsRequest { Data = data, PalA = palA, PalB = palB });
 
-        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+        string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name ?? LocalizationService.DefaultLanguage;
+        Localizer? localizer = await _localizationService.GetLocalizer(language);
 
         return TypedResults.Ok(child.ToV1(localizer));
     }
@@ -77,6 +81,7 @@ public class PalBreedingController : ControllerBase
     [HttpGet("{palName}/parents")]
     [ProducesResponseType<PalCouple>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UseAcceptLanguageHeader]
     public async Task<Results<Ok<PalCouple[]>, ProblemHttpResult>> GetParents(string palName)
     {
         VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
@@ -92,7 +97,8 @@ public class PalBreedingController : ControllerBase
 
         IReadOnlyCollection<Requests.Breeding.PalCouple> couples = await _mediator.Send(new UnbreedPalsRequest { Data = data, Pal = pal });
 
-        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+        string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name ?? LocalizationService.DefaultLanguage;
+        Localizer? localizer = await _localizationService.GetLocalizer(language);
 
         return TypedResults.Ok(couples.Select(c => c.ToV1(localizer)).ToArray());
     }

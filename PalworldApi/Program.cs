@@ -5,11 +5,22 @@ using PalworldApi.Rest.v1;
 using PalworldApi.Serialization;
 using PalworldApi.Services;
 using Serilog;
+using Serilog.Extensions.Hosting;
+using Serilog.Extensions.Logging;
 
-Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.Console().CreateBootstrapLogger();
+ReloadableLogger logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.Console().CreateBootstrapLogger();
+SerilogLoggerFactory loggerFactory = new(logger);
+
+
+Log.Logger = logger;
 
 try
 {
+    RawDataService rawDataService = new(loggerFactory.CreateLogger<RawDataService>());
+    LocalizationService localizationService = new(rawDataService);
+
+    string[] languages = (await localizationService.GetLanguages()).ToArray();
+
     WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddProblemDetails();
@@ -21,8 +32,8 @@ try
     builder.Services.AddSingleton<AppJsonSerializerContext>();
     builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default); });
 
-    builder.Services.AddSingleton<RawDataService>();
-    builder.Services.AddSingleton<LocalizationService>();
+    builder.Services.AddSingleton(rawDataService);
+    builder.Services.AddSingleton(localizationService);
 
     builder.Services.AddMvc();
     builder.Services.AddControllers(
@@ -34,11 +45,19 @@ try
                 );
             }
         )
-        .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-    ;
+        .AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    builder.Services.AddRequestLocalization(
+        opt =>
+        {
+            opt.AddSupportedCultures(languages);
+            opt.AddSupportedUICultures(languages);
+            opt.SetDefaultCulture(LocalizationService.DefaultLanguage);
+            opt.ApplyCurrentCultureToResponseHeaders = true;
+        }
+    );
     builder.Services.AddEndpointsApiExplorer();
 
-    builder.Services.AddV1();
+    builder.Services.AddV1(languages, LocalizationService.DefaultLanguage);
 
     builder.Logging.ClearProviders();
     builder.Logging.AddAzureWebAppDiagnostics();
@@ -46,6 +65,8 @@ try
     builder.Host.UseSerilog((context, services, configuration) => configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services), writeToProviders: true);
 
     WebApplication app = builder.Build();
+
+    app.UseRequestLocalization();
 
     if (app.Environment.IsDevelopment())
     {

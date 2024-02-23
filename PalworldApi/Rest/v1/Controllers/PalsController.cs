@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using PalworldApi.Models;
 using PalworldApi.Models.Search;
 using PalworldApi.Requests.SearchPalTribes;
 using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.OpenApi.AcceptLanguage;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
 using Pal = PalworldApi.Rest.v1.Models.Pals.Pal;
@@ -45,6 +47,7 @@ public class PalsController : ControllerBase
     [HttpGet]
     [ProducesResponseType<SearchResult<PalTribe>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UseAcceptLanguageHeader]
     public async Task<Results<Ok<SearchResult<PalTribe>>, ProblemHttpResult>> SearchTribes([FromQuery] SearchRequest<PalsFilters> request)
     {
         VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
@@ -55,7 +58,8 @@ public class PalsController : ControllerBase
 
         SearchResult<PalworldDataExtractor.Abstractions.Pals.PalTribe> searchResult = await _mediator.Send(new SearchPalTribesRequest { Data = data, SearchRequest = request });
 
-        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+        string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name ?? LocalizationService.DefaultLanguage;
+        Localizer? localizer = await _localizationService.GetLocalizer(language);
 
         return TypedResults.Ok(searchResult.Select(tribe => tribe.ToV1(localizer)));
     }
@@ -71,6 +75,7 @@ public class PalsController : ControllerBase
     [HttpGet("{tribeName}")]
     [ProducesResponseType<PalTribe>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UseAcceptLanguageHeader]
     public async Task<Results<Ok<PalTribe>, ProblemHttpResult>> GetTribe(string tribeName)
     {
         VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
@@ -85,7 +90,8 @@ public class PalsController : ControllerBase
             return TribeNotFound(tribeName);
         }
 
-        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+        string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name ?? LocalizationService.DefaultLanguage;
+        Localizer? localizer = await _localizationService.GetLocalizer(language);
 
         return TypedResults.Ok(tribe.ToV1(localizer));
     }
@@ -129,6 +135,7 @@ public class PalsController : ControllerBase
     [HttpGet("{tribeName}/main")]
     [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UseAcceptLanguageHeader]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetPal(string tribeName)
     {
         VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
@@ -145,7 +152,8 @@ public class PalsController : ControllerBase
 
         PalworldDataExtractor.Abstractions.Pals.Pal mainPal = tribe.GetMainPal();
 
-        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+        string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name ?? LocalizationService.DefaultLanguage;
+        Localizer? localizer = await _localizationService.GetLocalizer(language);
 
         return TypedResults.Ok(mainPal.ToV1(localizer));
     }
@@ -161,6 +169,7 @@ public class PalsController : ControllerBase
     [HttpGet("{tribeName}/boss")]
     [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UseAcceptLanguageHeader]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetBossPal(string tribeName)
     {
         VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
@@ -181,7 +190,8 @@ public class PalsController : ControllerBase
             return PalNotFound(tribeName, "boss");
         }
 
-        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+        string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name ?? LocalizationService.DefaultLanguage;
+        Localizer? localizer = await _localizationService.GetLocalizer(language);
 
         return TypedResults.Ok(mainPal.ToV1(localizer));
     }
@@ -197,6 +207,7 @@ public class PalsController : ControllerBase
     [HttpGet("{tribeName}/gym")]
     [ProducesResponseType<Pal>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [UseAcceptLanguageHeader]
     public async Task<Results<Ok<Pal>, ProblemHttpResult>> GetGymPal(string tribeName)
     {
         VersionedData? data = await _rawDataService.GetData(RawDataService.DefaultVersion);
@@ -217,7 +228,8 @@ public class PalsController : ControllerBase
             return PalNotFound(tribeName, "gym");
         }
 
-        Localizer? localizer = await _localizationService.GetLocalizer(LocalizationService.DefaultLanguage);
+        string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name ?? LocalizationService.DefaultLanguage;
+        Localizer? localizer = await _localizationService.GetLocalizer(language);
 
         return TypedResults.Ok(mainPal.ToV1(localizer));
     }
