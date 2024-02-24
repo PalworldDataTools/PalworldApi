@@ -1,4 +1,5 @@
-﻿using PalworldApi.Models;
+﻿using System.Collections.Concurrent;
+using PalworldApi.Models;
 using SkiaSharp;
 
 namespace PalworldApi.Services;
@@ -9,7 +10,7 @@ namespace PalworldApi.Services;
 public class PalIconsService
 {
     readonly RawDataService _rawDataService;
-    readonly Dictionary<string, Dictionary<string, MultiSizeIcon>> _cache = new();
+    readonly ConcurrentDictionary<string, Dictionary<string, MultiSizeIcon>> _cache = new();
 
     /// <summary>
     ///     Create the Pal icons service

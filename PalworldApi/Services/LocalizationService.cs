@@ -1,4 +1,5 @@
-﻿using PalworldApi.Models;
+﻿using System.Collections.Concurrent;
+using PalworldApi.Models;
 using PalworldDataExtractor.Abstractions.L10N;
 
 namespace PalworldApi.Services;
@@ -14,7 +15,7 @@ public class LocalizationService
     public const string DefaultLanguage = "en";
 
     readonly RawDataService _rawDataService;
-    readonly Dictionary<string, Localizer> _cachedLocalizers = new();
+    readonly ConcurrentDictionary<string, Localizer> _cachedLocalizers = new();
 
     /// <summary>
     ///     Create the localization service

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
 using PalworldApi.Models;
 using PalworldDataExtractor.Abstractions;
 
@@ -20,7 +21,7 @@ public class RawDataService
     public const string DefaultVersion = "steam-13390747";
 
     readonly ILogger<RawDataService> _logger;
-    readonly Dictionary<string, VersionedData> _cachedData = new();
+    readonly ConcurrentDictionary<string, VersionedData> _cachedData = new();
 
     /// <summary>
     ///     Create the raw data service
