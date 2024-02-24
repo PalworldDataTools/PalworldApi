@@ -8,14 +8,12 @@ namespace PalworldApi.Rest.OpenApi.PalworldVersion;
 
 class AddPalworldVersionHeaderOperationProcessor : IOperationProcessor
 {
-    public AddPalworldVersionHeaderOperationProcessor(IReadOnlyCollection<string> availableVersions, string? defaultVersion = null)
-    {
-        AvailableVersions = availableVersions;
-        DefaultVersion = defaultVersion;
-    }
+    readonly JsonSchema _availableVersionsEnumeration;
 
-    public IReadOnlyCollection<string> AvailableVersions { get; private set; }
-    public string? DefaultVersion { get; private set; }
+    public AddPalworldVersionHeaderOperationProcessor(JsonSchema availableVersionsEnumeration)
+    {
+        _availableVersionsEnumeration = availableVersionsEnumeration;
+    }
 
     public bool Process(OperationProcessorContext context)
     {
@@ -31,19 +29,12 @@ class AddPalworldVersionHeaderOperationProcessor : IOperationProcessor
             Kind = OpenApiParameterKind.Header,
             Schema = new JsonSchema
             {
-                Type = JsonObjectType.String,
-                Item = new JsonSchema { Type = JsonObjectType.String }
+                Reference = _availableVersionsEnumeration
             },
             IsRequired = false,
             IsNullableRaw = true,
-            Description = "The version of Palworld to read data from.",
-            Default = DefaultVersion ?? AvailableVersions.FirstOrDefault()
+            Description = "The version of Palworld to read data from."
         };
-
-        foreach (string value in AvailableVersions)
-        {
-            parameter.Schema.Enumeration.Add(value);
-        }
 
         context.OperationDescription.Operation.Parameters.Add(parameter);
 

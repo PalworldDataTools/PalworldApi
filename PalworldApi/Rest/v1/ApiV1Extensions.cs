@@ -18,7 +18,10 @@ static class ApiV1Extensions
                 opt.OperationProcessors.Add(new DotnetOpenApiProcessor());
                 opt.DocumentProcessors.Add(new IncludeAdditionalModelsDocumentProcessor());
 
-                options?.Invoke(new ApiV1Options(opt));
+                ApiV1Options apiV1Options = new(opt);
+                options?.Invoke(apiV1Options);
+
+                opt.DocumentProcessors.Add(new IncludeSchemasDocumentProcessor(apiV1Options.GetSchemasToAppendToDocument()));
             }
         );
 }
