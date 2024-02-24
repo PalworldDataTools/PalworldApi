@@ -1,6 +1,4 @@
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc;
-using PalworldApi;
 using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Rest.v1;
 using PalworldApi.Serialization;
@@ -27,7 +25,6 @@ try
 
     builder.Services.AddProblemDetails();
     builder.Services.AddCors(opt => opt.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
-    builder.Services.AddResponseCaching();
 
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
@@ -36,18 +33,10 @@ try
 
     builder.Services.AddSingleton(rawDataService);
     builder.Services.AddSingleton(localizationService);
+    builder.Services.AddSingleton<PalIconsService>();
 
     builder.Services.AddMvc();
-    builder.Services.AddControllers(
-            opt =>
-            {
-                opt.CacheProfiles.Add(
-                    Constants.ResponseCacheLongTermProfile,
-                    new CacheProfile { Duration = (int)TimeSpan.FromDays(1).TotalSeconds, Location = ResponseCacheLocation.Any }
-                );
-            }
-        )
-        .AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     builder.Services.AddRequestLocalization(
         opt =>
         {
@@ -90,8 +79,6 @@ try
     app.UseRouting();
 
     app.UseCors();
-
-    app.UseResponseCaching();
 
     app.MapDefaultControllerRoute();
 

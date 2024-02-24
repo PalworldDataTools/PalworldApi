@@ -9,6 +9,7 @@ using PalworldApi.Requests.SearchPalTribes;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.OpenApi.AcceptLanguage;
 using PalworldApi.Rest.OpenApi.PalworldVersion;
+using PalworldApi.Rest.v1.Models.PalIcons;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
 using Pal = PalworldApi.Rest.v1.Models.Pals.Pal;
@@ -26,17 +27,19 @@ namespace PalworldApi.Rest.v1.Controllers;
 public class PalsController : ControllerBase
 {
     readonly RawDataService _rawDataService;
+    readonly PalIconsService _palIconsService;
     readonly LocalizationService _localizationService;
     readonly IMediator _mediator;
 
     /// <summary>
     ///     Create the pals controller
     /// </summary>
-    public PalsController(RawDataService rawDataService, IMediator mediator, LocalizationService localizationService)
+    public PalsController(RawDataService rawDataService, PalIconsService palIconsService, LocalizationService localizationService, IMediator mediator)
     {
         _rawDataService = rawDataService;
         _mediator = mediator;
         _localizationService = localizationService;
+        _palIconsService = palIconsService;
     }
 
     /// <summary>
@@ -108,24 +111,28 @@ public class PalsController : ControllerBase
     ///     Get the icon of the given tribe.
     /// </remarks>
     /// <param name="tribeName">The name of the tribe to get</param>
+    /// <param name="size">The size of the returned icon</param>
     /// <returns>The icon of the given tribe</returns>
     [HttpGet("{tribeName}/icon")]
-    [ResponseCache(CacheProfileName = Constants.ResponseCacheLongTermProfile)]
     [ProducesResponseType<ActionResult>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [UsePalworldVersionHeader]
-    public async Task<Results<FileContentHttpResult, ProblemHttpResult>> GetIcon(string tribeName)
+    public async Task<Results<FileContentHttpResult, ProblemHttpResult>> GetIcon(string tribeName, PalIconSize size)
     {
         string palworldVersion = HttpContext.Features.Get<PalworldVersionFeature>()?.Version ?? RawDataService.DefaultVersion;
-        VersionedData? data = await _rawDataService.GetData(palworldVersion);
-        if (data == null)
+        (int, int)? sizePx = size switch
         {
-            return DataNotFound(RawDataService.DefaultVersion);
-        }
+            PalIconSize.Original => null,
+            PalIconSize.Small => (64, 64),
+            PalIconSize.Medium => (256, 256),
+            PalIconSize.Big => (512, 512),
+            _ => null
+        };
 
-        if (!data.Data.TribeIcons.TryGetValue(tribeName, out byte[]? icon))
+        byte[]? icon = await _palIconsService.GetPalIconAsync(tribeName, sizePx, palworldVersion);
+        if (icon == null)
         {
-            return TribeNotFound(tribeName);
+            return IconNotFound(tribeName, palworldVersion);
         }
 
         return TypedResults.File(icon, "image/png", tribeName + ".png");
@@ -246,6 +253,9 @@ public class PalsController : ControllerBase
 
         return TypedResults.Ok(mainPal.ToV1(localizer));
     }
+
+    static ProblemHttpResult IconNotFound(string name, string version) =>
+        TypedResults.Problem($"Could not find icon for tribe with name {name} in version {version}", statusCode: StatusCodes.Status404NotFound);
 
     static ProblemHttpResult PalNotFound(string name, string variant) =>
         TypedResults.Problem($"Could not find {variant} pal of tribe: {name}", statusCode: StatusCodes.Status404NotFound);
