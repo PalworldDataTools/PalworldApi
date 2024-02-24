@@ -51,17 +51,30 @@ public class PalIconsService
 
     class MultiSizeIcon
     {
-        readonly SKBitmap _original;
+        readonly SKBitmap? _original;
         readonly Dictionary<(int, int), byte[]> _imagesCache;
 
         public MultiSizeIcon(byte[] original)
         {
-            _original = SKBitmap.Decode(original);
-            _imagesCache = new Dictionary<(int, int), byte[]> { { (_original.Width, _original.Height), original } };
+            if (original.Length != 0)
+            {
+                _original = SKBitmap.Decode(original);
+                _imagesCache = new Dictionary<(int, int), byte[]> { { (_original.Width, _original.Height), original } };
+            }
+            else
+            {
+                _original = null;
+                _imagesCache = new Dictionary<(int, int), byte[]>();
+            }
         }
 
         public byte[] Get((int Width, int Height)? size = null)
         {
+            if (_original == null)
+            {
+                return Array.Empty<byte>();
+            }
+
             size ??= (_original.Width, _original.Height);
 
             if (_imagesCache.TryGetValue(size.Value, out byte[]? icon))
