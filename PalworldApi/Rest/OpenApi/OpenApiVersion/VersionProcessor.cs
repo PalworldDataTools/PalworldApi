@@ -3,7 +3,7 @@ using NSwag.Generation.AspNetCore;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
-namespace PalworldApi.Rest.OpenApi;
+namespace PalworldApi.Rest.OpenApi.OpenApiVersion;
 
 class VersionProcessor : IOperationProcessor
 {

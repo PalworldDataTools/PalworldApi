@@ -1,4 +1,5 @@
 using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.OpenApi.IncludeInOpenApi;
 
 namespace PalworldApi.Models.Search;
 

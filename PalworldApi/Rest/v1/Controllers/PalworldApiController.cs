@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.OpenApi.OpenApiVersion;
 using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Services;
 

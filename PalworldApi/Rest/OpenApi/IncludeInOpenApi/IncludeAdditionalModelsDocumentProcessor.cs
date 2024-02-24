@@ -3,7 +3,7 @@ using Namotion.Reflection;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
-namespace PalworldApi.Rest.OpenApi;
+namespace PalworldApi.Rest.OpenApi.IncludeInOpenApi;
 
 class IncludeAdditionalModelsDocumentProcessor : IDocumentProcessor
 {

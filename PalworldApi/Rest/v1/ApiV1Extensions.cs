@@ -1,4 +1,6 @@
 ﻿using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.OpenApi.IncludeInOpenApi;
+using PalworldApi.Rest.OpenApi.OpenApiVersion;
 
 namespace PalworldApi.Rest.v1;
 

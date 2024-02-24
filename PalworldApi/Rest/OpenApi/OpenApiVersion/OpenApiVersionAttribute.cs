@@ -1,4 +1,4 @@
-﻿namespace PalworldApi.Rest.OpenApi;
+﻿namespace PalworldApi.Rest.OpenApi.OpenApiVersion;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
 class OpenApiVersionAttribute : Attribute

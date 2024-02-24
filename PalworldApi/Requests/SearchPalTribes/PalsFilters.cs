@@ -1,5 +1,6 @@
 ﻿using PalworldApi.Models.Search;
 using PalworldApi.Rest.OpenApi;
+using PalworldApi.Rest.OpenApi.IncludeInOpenApi;
 using PalworldApi.Rest.v1.Models.Pals;
 
 namespace PalworldApi.Requests.SearchPalTribes;

@@ -8,6 +8,7 @@ using PalworldApi.Models;
 using PalworldApi.Requests.Breeding;
 using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.OpenApi.AcceptLanguage;
+using PalworldApi.Rest.OpenApi.OpenApiVersion;
 using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Rest.v1.Models.Pals;
 using PalworldApi.Services;
