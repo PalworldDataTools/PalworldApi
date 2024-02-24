@@ -10,7 +10,7 @@ namespace PalworldApi.Services;
 public class PalIconsService
 {
     readonly RawDataService _rawDataService;
-    readonly ConcurrentDictionary<string, Dictionary<string, MultiSizeIcon>> _cache = new();
+    readonly ConcurrentDictionary<string, ConcurrentDictionary<string, MultiSizeIcon>> _cache = new();
 
     /// <summary>
     ///     Create the Pal icons service
@@ -26,7 +26,7 @@ public class PalIconsService
     public async Task<byte[]?> GetPalIconAsync(string tribeName, (int Width, int Height)? size = null, string? version = null)
     {
         version ??= RawDataService.DefaultVersion;
-        if (!_cache.TryGetValue(version, out Dictionary<string, MultiSizeIcon>? palIcons) || !palIcons.TryGetValue(tribeName, out MultiSizeIcon? multiSizeIcon))
+        if (!_cache.TryGetValue(version, out ConcurrentDictionary<string, MultiSizeIcon>? palIcons) || !palIcons.TryGetValue(tribeName, out MultiSizeIcon? multiSizeIcon))
         {
             VersionedData? data = await _rawDataService.GetData(version);
             if (data == null)
@@ -42,7 +42,7 @@ public class PalIconsService
 
             multiSizeIcon = new MultiSizeIcon(icon);
 
-            _cache.TryAdd(version, new Dictionary<string, MultiSizeIcon>());
+            _cache.TryAdd(version, new ConcurrentDictionary<string, MultiSizeIcon>());
             _cache[version][tribeName] = multiSizeIcon;
         }
 
