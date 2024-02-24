@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.OpenApi.OpenApiVersion;
 using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Services;
@@ -46,7 +45,7 @@ public class PalworldSteamApplicationController : ControllerBase
         SteamManifest? manifest = await TryGetManifest(palworldVersion);
         if (manifest == null)
         {
-            return ManifestNotFound(RawDataService.DefaultVersion);
+            return ManifestNotFound(palworldVersion);
         }
 
         return TypedResults.Ok(manifest.AppId);
@@ -69,7 +68,7 @@ public class PalworldSteamApplicationController : ControllerBase
         SteamManifest? manifest = await TryGetManifest(palworldVersion);
         if (manifest == null)
         {
-            return ManifestNotFound(RawDataService.DefaultVersion);
+            return ManifestNotFound(palworldVersion);
         }
 
         return TypedResults.Ok(manifest.AppName);
@@ -92,7 +91,7 @@ public class PalworldSteamApplicationController : ControllerBase
         SteamManifest? manifest = await TryGetManifest(palworldVersion);
         if (manifest == null)
         {
-            return ManifestNotFound(RawDataService.DefaultVersion);
+            return ManifestNotFound(palworldVersion);
         }
 
         return TypedResults.Ok(manifest.BuildId);
@@ -115,7 +114,7 @@ public class PalworldSteamApplicationController : ControllerBase
         SteamManifest? manifest = await TryGetManifest(palworldVersion);
         if (manifest == null)
         {
-            return ManifestNotFound(RawDataService.DefaultVersion);
+            return ManifestNotFound(palworldVersion);
         }
 
         return TypedResults.Ok(manifest.AppSize);

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using PalworldApi.Models;
 using PalworldApi.Requests.Breeding;
-using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.OpenApi.AcceptLanguage;
 using PalworldApi.Rest.OpenApi.OpenApiVersion;
 using PalworldApi.Rest.OpenApi.PalworldVersion;
@@ -56,7 +55,7 @@ public class PalBreedingController : ControllerBase
         VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
-            return DataNotFound(RawDataService.DefaultVersion);
+            return DataNotFound(palworldVersion);
         }
 
         if (!TryFindPal(data, palNameA, out PalworldDataExtractor.Abstractions.Pals.Pal? palA))
@@ -93,7 +92,7 @@ public class PalBreedingController : ControllerBase
         VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
-            return DataNotFound(RawDataService.DefaultVersion);
+            return DataNotFound(palworldVersion);
         }
 
         if (!TryFindPal(data, palName, out PalworldDataExtractor.Abstractions.Pals.Pal? pal))

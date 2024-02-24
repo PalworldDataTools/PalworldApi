@@ -6,7 +6,6 @@ using NSwag.Annotations;
 using PalworldApi.Models;
 using PalworldApi.Models.Search;
 using PalworldApi.Requests.SearchPalTribes;
-using PalworldApi.Rest.OpenApi;
 using PalworldApi.Rest.OpenApi.AcceptLanguage;
 using PalworldApi.Rest.OpenApi.OpenApiVersion;
 using PalworldApi.Rest.OpenApi.PalworldVersion;
@@ -60,7 +59,7 @@ public class PalsController : ControllerBase
         VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
-            return DataNotFound(RawDataService.DefaultVersion);
+            return DataNotFound(palworldVersion);
         }
 
         SearchResult<PalworldDataExtractor.Abstractions.Pals.PalTribe> searchResult = await _mediator.Send(new SearchPalTribesRequest { Data = data, SearchRequest = request });
@@ -90,7 +89,7 @@ public class PalsController : ControllerBase
         VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
-            return DataNotFound(RawDataService.DefaultVersion);
+            return DataNotFound(palworldVersion);
         }
 
         PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Data.Tribes.FirstOrDefault(t => t.Name == tribeName);
@@ -158,7 +157,7 @@ public class PalsController : ControllerBase
         VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
-            return DataNotFound(RawDataService.DefaultVersion);
+            return DataNotFound(palworldVersion);
         }
 
         PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Data.Tribes.FirstOrDefault(t => t.Name == tribeName);
@@ -194,7 +193,7 @@ public class PalsController : ControllerBase
         VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
-            return DataNotFound(RawDataService.DefaultVersion);
+            return DataNotFound(palworldVersion);
         }
 
         PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Data.Tribes.FirstOrDefault(t => t.Name == tribeName);
@@ -234,7 +233,7 @@ public class PalsController : ControllerBase
         VersionedData? data = await _rawDataService.GetData(palworldVersion);
         if (data == null)
         {
-            return DataNotFound(RawDataService.DefaultVersion);
+            return DataNotFound(palworldVersion);
         }
 
         PalworldDataExtractor.Abstractions.Pals.PalTribe? tribe = data.Data.Tribes.FirstOrDefault(t => t.Name == tribeName);
