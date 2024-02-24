@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 using PalworldApi.Rest.OpenApi.PalworldVersion;
 using PalworldApi.Rest.v1;
-using PalworldApi.Serialization;
 using PalworldApi.Services;
 using Serilog;
 using Serilog.Extensions.Hosting;
@@ -23,20 +22,18 @@ try
 
     WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+    builder.Services.ConfigureHttpJsonOptions(opt => opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
     builder.Services.AddProblemDetails();
     builder.Services.AddCors(opt => opt.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
-
-    builder.Services.AddSingleton<AppJsonSerializerContext>();
-    builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default); });
 
     builder.Services.AddSingleton(rawDataService);
     builder.Services.AddSingleton(localizationService);
     builder.Services.AddSingleton<PalIconsService>();
 
     builder.Services.AddMvc();
-    builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     builder.Services.AddRequestLocalization(
         opt =>
         {
