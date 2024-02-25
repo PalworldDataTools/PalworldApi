@@ -32,6 +32,11 @@ public class PalIdentity
     ///     The localized name of the pal
     /// </summary>
     public string? LocalizedName { get; set; }
+
+    /// <summary>
+    ///     The localized description of the pal
+    /// </summary>
+    public string? LocalizedDescription { get; set; }
 }
 
 static class PalIdentityMappingExtensions
@@ -42,6 +47,7 @@ static class PalIdentityMappingExtensions
             TribeName = pal.TribeName ?? "??",
             Name = pal.Name,
             LocalizedName = localizer?.Localize($"DT_PalNameText.PAL_NAME_{pal.TribeName}"),
+            LocalizedDescription = localizer?.Localize($"DT_PalLongDescriptionText.PAL_LONG_DESC_{pal.TribeName}"),
             PaldexIndex = pal.ZukanIndex,
             PaldexIndexSuffix = string.IsNullOrWhiteSpace(pal.ZukanIndexSuffix) ? null : pal.ZukanIndexSuffix
         };
