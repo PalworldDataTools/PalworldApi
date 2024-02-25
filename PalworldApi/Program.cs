@@ -22,6 +22,7 @@ try
 
     WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+    // makes enums in responses strings instead of numbers
     builder.Services.ConfigureHttpJsonOptions(opt => opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
     builder.Services.AddProblemDetails();
@@ -33,7 +34,10 @@ try
     builder.Services.AddSingleton(localizationService);
     builder.Services.AddSingleton<PalIconsService>();
 
-    builder.Services.AddMvc();
+    builder.Services.AddMvc()
+        // makes NSwag generate schemas with string values for enum types
+        .AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
     builder.Services.AddRequestLocalization(
         opt =>
         {
